@@ -1,0 +1,102 @@
+<script type="text/javascript">
+    RED.nodes.registerType('grant',{
+        category: 'access control',
+        color: '#ca9758',
+        defaults: {
+            name: {value:""},
+            who: {value:""},
+            createAny: {value:false},
+            createOwn: {value:false},
+            updateAny: {value:false},
+            updateOwn: {value:false},
+            update: {value:""},
+            readAny: {value:false},
+            readOwn: {value:false},
+            deleteAny: {value:false},
+            deleteOwn: {value:false},
+            what: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        icon: "font-awesome/fa-shield",
+        label: function() {
+            return this.name||"grant";
+        }
+    });
+</script>
+
+
+<script type="text/html" data-template-name="grant">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <p>Check the "Help" tab for more information on the values.</p>
+    <div class="form-row">
+        <label for="node-input-who"><i class="fa fa-user-circle"></i> Who</label>
+        <input type="text" id="node-input-who" placeholder="User">
+    </div>
+    <div class="form-row">
+        <label for="node-input-createAny">&nbsp;</label>            
+        <input type="checkbox" id="node-input-createAny" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-createAny" style="width: auto"><i class="fa fa-plus-square-o" style="transform: scaleX(-1);"></i> CreateAny</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-createOwn">&nbsp;</label>            
+        <input type="checkbox" id="node-input-createOwn" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-createOwn" style="width: auto"><i class="fa fa-plus-square" style="transform: scaleX(-1);"></i> CreateOwn</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-readAny">&nbsp;</label>            
+        <input type="checkbox" id="node-input-readAny" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-readAny" style="width: auto"><i class="fa fa-bookmark-o" style="transform: scaleX(-1);"></i> ReadAny</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-readOwn">&nbsp;</label>            
+        <input type="checkbox" id="node-input-readOwn" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-readOwn" style="width: auto"><i class="fa fa-bookmark" style="transform: scaleX(-1);"></i> ReadOwn</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-updateAny">&nbsp;</label>            
+        <input type="checkbox" id="node-input-updateAny" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-updateAny" style="width: auto"><i class="fa fa-pencil-square-o" style="transform: scaleX(-1);"></i> UpdateAny</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-updateOwn">&nbsp;</label>            
+        <input type="checkbox" id="node-input-updateOwn" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-updateOwn" style="width: auto"><i class="fa fa-pencil-square" style="transform: scaleX(-1);"></i> UpdateOwn</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-update"><i class="fa fa-wrench"></i> Update attributes</label>
+        <input type="text" id="node-input-update" placeholder="Attribute1, Attribute2">
+    </div>
+    <div class="form-row">
+        <label for="node-input-deleteAny">&nbsp;</label>            
+        <input type="checkbox" id="node-input-deleteAny" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-deleteAny" style="width: auto"><i class="fa fa-minus-square-o" style="transform: scaleX(-1);"></i> DeleteAny</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-deleteOwn">&nbsp;</label>            
+        <input type="checkbox" id="node-input-deleteOwn" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-deleteOwn" style="width: auto"><i class="fa fa-minus-square" style="transform: scaleX(-1);"></i> DeleteOwn</label>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-what"><i class="fa fa-object-group"></i> What</label>
+        <input type="text" id="node-input-what" placeholder="Object">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="grant">
+    <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
+    <h4>Grant node</h4>
+    <p>This node, receiving a message in input, grants a certain user permission to access an object.</p>
+    <p>The attributes that can be set are:</p>
+    <ul>
+    <li>WHO: the user;</li>
+    <li>CRUD any/own: the CRUD (Create, Read, Update, Delete) actions, in both the &#39;any&#39; and &#39;own&#39; scopes;</li>
+    <li>UPDATE attributes: comma-separated strings that can be given to specify which attributes the update action can edit;</li>
+    <li>WHAT: the object to be accessed by the user.</li>
+    </ul>
+    <p><b>Note:</b> WHO, UPDATE and WHAT values can also be specified using the msg attributes (e.g., writing msg.user in the text input will force the node to look inside the content of msg.user). In case of UPDATE, be sure to provide an array, otherwise the node will fail.</p>
+</script>

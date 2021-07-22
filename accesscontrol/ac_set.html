@@ -1,0 +1,29 @@
+<script type="text/javascript">
+    RED.nodes.registerType('ac_set',{
+        category: 'access control',
+        color: '#ca9758',
+        defaults: {
+            name: {value:""},
+        },
+        inputs:1,
+        outputs:0,
+        icon: "font-awesome/fa-shield",
+        label: function() {
+            return this.name||"ac_set";
+        }
+    });
+</script>
+
+
+<script type="text/html" data-template-name="ac_set">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="ac_set">
+    <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
+    <h4>AC_SET node</h4>
+    <p>This node sets up the Access Control constant that is used in the other nodes of access control, via context (flow context in this case).</p>
+</script>

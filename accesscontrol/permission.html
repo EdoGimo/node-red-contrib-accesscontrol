@@ -1,0 +1,65 @@
+<script type="text/javascript">
+    RED.nodes.registerType('permission',{
+        category: 'access control',
+        color: '#87a980',
+        defaults: {
+            name: {value:""},
+            who: {value:""},
+            crud: {value:"create"},
+            any: {value:false},
+            what: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-shield",
+        label: function() {
+            return this.name||"permission";
+        }
+    });
+</script>
+
+
+<script type="text/html" data-template-name="permission">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <p>Check the "Help" tab for more information on the values.</p>
+    <div class="form-row">
+        <label for="node-input-who"><i class="fa fa-user-circle"></i> Who</label>
+        <input type="text" id="node-input-who" placeholder="User">
+    </div>
+    <div class="form-row">
+        <label for="node-input-crud"><i class="fa fa-briefcase"></i> CRUD</label>
+        <select id="node-input-crud">
+            <option value="create">Create</option>
+            <option value="read">Read</option>
+            <option value="update">Update</option>
+            <option value="delete">Delete</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-any">&nbsp;</label>            
+        <input type="checkbox" id="node-input-any" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-any" style="width: auto"><i class="fa fa-users" style="transform: scaleX(-1);"></i> Check if Any, uncheck if Own</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-what"><i class="fa fa-object-group"></i> What</label>
+        <input type="text" id="node-input-what" placeholder="Object">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="permission">
+    <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
+    <h4>Permission node</h4>
+    <p>This node, receiving a message in input, checks if a specified user has certain permissions to access an object.</p>
+    <p>The attributes that can be set are:</p>
+    <ul>
+    <li>WHO: the user;</li>
+    <li>CRUD: the CRUD (Create, Read, Update, Delete) action;</li>
+    <li>ANY/OWN checkbox: checked if the scope is set to &#39;any&#39;, unchecked if set to &#39;own&#39; (e.g., createAny vs createOwn);</li>
+    <li>WHAT: the object to be accessed by the user.</li>
+    </ul>
+    <p>The node returns in the payload the result (true/false) and in msg.attributes the potential attributes that can be set (useful mostly for the Update action).</p>
+    <p><b>Note:</b> WHO and WHAT values can also be specified using the msg attributes (e.g., writing msg.user in the text input will force the node to look inside the content of msg.user).</p>
+</script>
