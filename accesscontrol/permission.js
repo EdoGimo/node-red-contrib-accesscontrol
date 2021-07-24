@@ -22,7 +22,7 @@ module.exports = function(RED) {
             const ac = flowContext.get("accesscontrol");
 
             //check if the who and what fields have a msg attribute
-            let re = new RegExp('^msg.[a-zA-Z]+$');
+            let re = new RegExp('^msg.[a-zA-Z0-9]+$');
 
             //get actual value
             if(re.test(node.who)){

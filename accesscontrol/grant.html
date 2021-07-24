@@ -7,13 +7,16 @@
             who: {value:""},
             createAny: {value:false},
             createOwn: {value:false},
+            create: {value:""},
             updateAny: {value:false},
             updateOwn: {value:false},
             update: {value:""},
             readAny: {value:false},
             readOwn: {value:false},
+            read: {value:""},
             deleteAny: {value:false},
             deleteOwn: {value:false},
+            delete: {value:""},
             what: {value:""}
         },
         inputs:1,
@@ -31,11 +34,18 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
-    <p>Check the "Help" tab for more information on the values.</p>
+    <p>Check the "Help" tab for more information on the parameters.</p>
+
+    <hr>
+
     <div class="form-row">
         <label for="node-input-who"><i class="fa fa-user-circle"></i> Who</label>
         <input type="text" id="node-input-who" placeholder="User">
     </div>
+
+    <hr>
+
+    <!--CREATE-->
     <div class="form-row">
         <label for="node-input-createAny">&nbsp;</label>            
         <input type="checkbox" id="node-input-createAny" style="display: inline-block; width: auto; vertical-align: top;">
@@ -47,6 +57,14 @@
         <label for="node-input-createOwn" style="width: auto"><i class="fa fa-plus-square" style="transform: scaleX(-1);"></i> CreateOwn</label>
     </div>
     <div class="form-row">
+        <label for="node-input-create"><i class="fa fa-wrench"></i> Create attributes</label>
+        <input type="text" id="node-input-create" placeholder="Attribute1, Attribute2">
+    </div>
+
+    <hr>
+
+    <!--READ-->
+    <div class="form-row">
         <label for="node-input-readAny">&nbsp;</label>            
         <input type="checkbox" id="node-input-readAny" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-readAny" style="width: auto"><i class="fa fa-bookmark-o" style="transform: scaleX(-1);"></i> ReadAny</label>
@@ -56,6 +74,14 @@
         <input type="checkbox" id="node-input-readOwn" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-readOwn" style="width: auto"><i class="fa fa-bookmark" style="transform: scaleX(-1);"></i> ReadOwn</label>
     </div>
+    <div class="form-row">
+        <label for="node-input-read"><i class="fa fa-wrench"></i> Read attributes</label>
+        <input type="text" id="node-input-read" placeholder="Attribute1, Attribute2">
+    </div>
+
+    <hr>
+
+    <!--UPDATE-->
     <div class="form-row">
         <label for="node-input-updateAny">&nbsp;</label>            
         <input type="checkbox" id="node-input-updateAny" style="display: inline-block; width: auto; vertical-align: top;">
@@ -70,6 +96,10 @@
         <label for="node-input-update"><i class="fa fa-wrench"></i> Update attributes</label>
         <input type="text" id="node-input-update" placeholder="Attribute1, Attribute2">
     </div>
+
+    <hr>
+
+    <!--DELETE-->
     <div class="form-row">
         <label for="node-input-deleteAny">&nbsp;</label>            
         <input type="checkbox" id="node-input-deleteAny" style="display: inline-block; width: auto; vertical-align: top;">
@@ -80,6 +110,12 @@
         <input type="checkbox" id="node-input-deleteOwn" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-deleteOwn" style="width: auto"><i class="fa fa-minus-square" style="transform: scaleX(-1);"></i> DeleteOwn</label>
     </div>
+    <div class="form-row">
+        <label for="node-input-delete"><i class="fa fa-wrench"></i> Delete attributes</label>
+        <input type="text" id="node-input-delete" placeholder="Attribute1, Attribute2">
+    </div>
+
+    <hr>
 
     <div class="form-row">
         <label for="node-input-what"><i class="fa fa-object-group"></i> What</label>
@@ -95,8 +131,8 @@
     <ul>
     <li>WHO: the user;</li>
     <li>CRUD any/own: the CRUD (Create, Read, Update, Delete) actions, in both the &#39;any&#39; and &#39;own&#39; scopes;</li>
-    <li>UPDATE attributes: comma-separated strings that can be given to specify which attributes the update action can edit;</li>
+    <li>CRUD attributes: comma-separated strings that can be given to specify which attributes the corresponding action can edit;</li>
     <li>WHAT: the object to be accessed by the user.</li>
     </ul>
-    <p><b>Note:</b> WHO, UPDATE and WHAT values can also be specified using the msg attributes (e.g., writing msg.user in the text input will force the node to look inside the content of msg.user). In case of UPDATE, be sure to provide an array, otherwise the node will fail.</p>
+    <p><b>Note:</b> All text fields can also be specified using the msg attributes (e.g., writing msg.user in an input field will force the node to look inside the content of msg.user). Only names with letters and numbers are supported. In case of CRUD attributes, be sure to provide an array, otherwise the node may fail or work in the wrong way.</p>
 </script>

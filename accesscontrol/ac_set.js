@@ -23,5 +23,5 @@ module.exports = function(RED) {
             //node.send(msg);
         });
     }
-    RED.nodes.registerType("ac_set", ACSetNode);
+    RED.nodes.registerType("AC init", ACSetNode);
 }
