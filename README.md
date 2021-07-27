@@ -1,5 +1,5 @@
 # WORK IN PROGRESS
-This node is not completed. This is still a test, as it only offers permission granting and checking.
+This node is not completed, it only offers limited access to the corresponding npm module's capabilities.
 
 # node-red-contrib-accesscontrol
 
