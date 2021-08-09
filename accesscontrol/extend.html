@@ -43,8 +43,14 @@
     <p>This node, receiving a message in input, grants to a certain user the permissions of another user.</p>
     <p>The attributes that can be set are:</p>
     <ul>
-    <li>Inheritant: the user that will receive the permissions;</li>
-    <li>Inheritor: the user that extends the permissions of the previous user.</li>
+        <li>Inheritant: the user that will receive the permissions;</li>
+        <li>Inheritor: the user that extends the permissions of the previous user.</li>
     </ul>
     <p><b>Note:</b> All text fields can also be specified using the msg attributes (e.g., writing msg.user in an input field will force the node to look inside the content of msg.user). Only names with letters and numbers are supported.</p>
+    <p>Notes on inheritance (from the link above, without examples):
+        <ul>
+            <li>A role cannot extend itself.</li>
+            <li>Cross-inheritance is not allowed.</li>
+            <li>A role cannot (pre)extend a non-existing role. In other words, you should first create the base role.</li>
+        </ul>
 </script>
