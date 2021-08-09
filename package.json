@@ -15,7 +15,8 @@
 			"ACSet":"accesscontrol/ac_set.js",
 			"Permission":"accesscontrol/permission.js",
 			"Grant":"accesscontrol/grant.js",
-			"Deny":"accesscontrol/deny.js"
+			"Deny":"accesscontrol/deny.js",
+			"Extend":"accesscontrol/extend.js"
 		}
 	}
 }
