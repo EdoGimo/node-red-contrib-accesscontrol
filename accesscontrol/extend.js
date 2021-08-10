@@ -27,16 +27,16 @@ module.exports = function(RED) {
             let re = new RegExp('^msg.[a-zA-Z0-9]+$');
 
             //get actual value
-            //Inheritant
+            //Beneficiary
             if(re.test(node.who)){
                 var x = eval(node.who);
-                node.warn("Using "+ node.who +" value for the Inheritant.");
+                node.warn("Using "+ node.who +" value for the beneficiary.");
                 node.who = x;
             }
-            //Inheritor
+            //Inherit from
             if(re.test(node.what)){
                 var x = eval(node.what);
-                node.warn("Using "+ node.what +" value for the Inheritor.");
+                node.warn("Using "+ node.what +" value for the role it is inherited from.");
                 node.what = x;
             }
 
