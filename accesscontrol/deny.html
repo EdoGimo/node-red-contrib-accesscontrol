@@ -36,7 +36,7 @@
 
     <div class="form-row">
         <label for="node-input-who"><i class="fa fa-user-circle"></i> Who</label>
-        <input type="text" id="node-input-who" placeholder="User">
+        <input type="text" id="node-input-who" placeholder="Role">
     </div>
 
     <hr>
@@ -106,12 +106,12 @@
 <script type="text/html" data-help-name="deny">
     <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
     <h4>Deny node</h4>
-    <p>This node, receiving a message in input, denies to a certain user permission to access an object.</p>
+    <p>This node, receiving a message in input, denies to a certain role permission to access an object.</p>
     <p>The attributes that can be set are:</p>
     <ul>
-    <li>WHO: the user;</li>
+    <li>WHO: the role;</li>
     <li>CRUD any/own: the CRUD (Create, Read, Update, Delete) actions, in both the &#39;any&#39; and &#39;own&#39; scopes;</li>
-    <li>WHAT: the object to be accessed by the user.</li>
+    <li>WHAT: the object to be accessed by the role.</li>
     </ul>
-    <p><b>Note:</b> All text fields can also be specified using the msg attributes (e.g., writing msg.user in an input field will force the node to look inside the content of msg.user). Only names with letters and numbers are supported.</p>
+    <p><b>Note:</b> All text fields can also be specified using the msg attributes (e.g., writing msg.role in an input field will force the node to look inside the content of msg.role). Only names with letters and numbers are supported.</p>
 </script>
