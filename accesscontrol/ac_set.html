@@ -4,6 +4,7 @@
         color: '#ca9758',
         defaults: {
             name: {value:""},
+            force: {value:false}
         },
         inputs:1,
         outputs:0,
@@ -20,10 +21,16 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
+    <hr>
+    <div class="form-row">
+        <label for="node-input-force">&nbsp;</label>            
+        <input type="checkbox" id="node-input-force" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-force" style="width: auto"><i class="fa fa-repeat" style="transform: scaleX(-1);"></i> Force recreation of AccessControl istance.</label>
+    </div>
 </script>
 
 <script type="text/html" data-help-name="AC init">
     <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
     <h4>AC init node</h4>
-    <p>This node sets up the Access Control constant that is used in the other nodes of access control, via context (flow context in this case). Put this node at the beginning of the flow. A check is made to ensure that the code is not run if it has already been executed previously, so it is not a problem if it is called several times.</p>
+    <p>This node sets up the Access Control constant that is used in the other nodes of access control, via context (flow context in this case). Put this node at the beginning of the flow. A check is made to ensure that the code is not run if it has already been executed previously, so it is not a problem if it is called several times. To skip this check, force the recreation of the istance with the corresponding option.</p>
 </script>

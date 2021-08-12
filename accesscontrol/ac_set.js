@@ -2,15 +2,19 @@ module.exports = function(RED) {
     function ACSetNode(config) {
         RED.nodes.createNode(this,config);
         
+        //options
+        this.force = config.force;
+
         //context selection (change ".flow" to ".global" for global context)
         var flowContext = this.context().flow;
 
         //MAIN code
         var node = this;
+
         node.on('input', function(msg) {
 
             //abort if flowcontext has already been set in the context
-            if(flowContext.get("accesscontrol") != null){
+            if(!node.force && flowContext.get("accesscontrol") != null){
                 return null;
             }
             const AccessControl = require('accesscontrol');
