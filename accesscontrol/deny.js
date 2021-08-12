@@ -99,7 +99,7 @@ module.exports = function(RED) {
             }
            
 
-            //node.send(msg);
+            node.send(msg);
         });
     }
     RED.nodes.registerType("deny", DenyNode);

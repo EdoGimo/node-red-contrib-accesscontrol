@@ -43,7 +43,7 @@ module.exports = function(RED) {
             ac.grant(node.who).extend(node.what);
            
 
-            //node.send(msg);
+            node.send(msg);
         });
     }
     RED.nodes.registerType("extend", ExtendNode);
