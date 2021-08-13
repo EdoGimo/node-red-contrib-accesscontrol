@@ -1,6 +1,6 @@
 # node-red-contrib-accesscontrol
 
-An utility for [Node-RED](https://nodered.org/), implementing the nmp module [accesscontrol](https://www.npmjs.com/package/accesscontrol).
+A [Node-RED](https://nodered.org/) implementation of the [accesscontrol](https://www.npmjs.com/package/accesscontrol) nmp module.
 
 
 ### Prerequisites
@@ -28,13 +28,14 @@ If necessary, restart Node-RED.
 
 ### How to use
 There are at the moment 5 nodes:
-- AC set
-- grant
-- extend
-- deny
-- permission
+- **AC set**: creates the AccessControl instance that contains all permissions (no database is used);
+- **grant**: enables to grant to a role a CRUD action (Create, Read, Update, Delete) over a resource;
+- **extend**: a quick way of granting to a role the same permissions of another role;
+- **deny**: drops CRUD permissions previously set with grant/extend;
+- **permission**: checks if specific permissions are implemented or not.
 
 Detailed information about each node can be read in the help tab of Node-RED.
+
 
 
 ### Examples
