@@ -4,26 +4,82 @@
         color: '#ca9758',
         defaults: {
             name: {value:""},
-            who: {value:""},
+            who: {value:"", validate: RED.validators.typedInput("whoType")},
+            whoType: { value:"str"},
+
             createAny: {value:false},
             createOwn: {value:false},
-            create: {value:""},
-            updateAny: {value:false},
-            updateOwn: {value:false},
-            update: {value:""},
+            create: {value:"", validate: RED.validators.typedInput("createType")},
+            createType: { value:"str"},
+
             readAny: {value:false},
             readOwn: {value:false},
-            read: {value:""},
+            read: {value:"", validate: RED.validators.typedInput("readType")},
+            readType: { value:"str"},
+
+            updateAny: {value:false},
+            updateOwn: {value:false},
+            update: {value:"", validate: RED.validators.typedInput("updateType")},
+            updateType: { value:"str"},
+
             deleteAny: {value:false},
             deleteOwn: {value:false},
-            delete: {value:""},
-            what: {value:""}
+            delete: {value:"", validate: RED.validators.typedInput("deleteType")},
+            deleteType: { value:"str"},
+
+            what: {value:"", validate: RED.validators.typedInput("whatType")},
+            whatType: { value:"str"}
         },
         inputs:1,
         outputs:1,
         icon: "font-awesome/fa-shield",
         label: function() {
             return this.name||"grant";
+        },
+        oneditprepare: function() {
+            $("#node-input-who").typedInput({
+                default: this.whoType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-whoType")
+            });
+            
+            $("#node-input-what").typedInput({
+                default: this.whatType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-whatType")
+            });
+
+            $("#node-input-create").typedInput({
+                default: this.createType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-createType")
+            });
+
+            $("#node-input-read").typedInput({
+                default: this.readType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-readType")
+            });
+
+            $("#node-input-update").typedInput({
+                default: this.updateType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-updateType")
+            });
+
+            $("#node-input-delete").typedInput({
+                default: this.deleteType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-deleteType")
+            });
+        },
+        onsave: function(){
+            this.whoType = $("#node-input-whoType").val();
+            this.whatType = $("#node-input-whatType").val();
+            this.createType = $("#node-input-createType").val();
+            this.readType = $("#node-input-readType").val();
+            this.updateType = $("#node-input-updateType").val();
+            this.deleteType = $("#node-input-deleteType").val();
         }
     });
 </script>
@@ -41,6 +97,7 @@
     <div class="form-row">
         <label for="node-input-who"><i class="fa fa-user-circle"></i> Who</label>
         <input type="text" id="node-input-who" placeholder="Role">
+        <input type="hidden" id="node-input-whoType">
     </div>
 
     <hr>
@@ -59,6 +116,7 @@
     <div class="form-row">
         <label for="node-input-create"><i class="fa fa-wrench"></i> Create attributes</label>
         <input type="text" id="node-input-create" placeholder="Attribute1, Attribute2">
+        <input type="hidden" id="node-input-createType">
     </div>
 
     <hr>
@@ -77,6 +135,7 @@
     <div class="form-row">
         <label for="node-input-read"><i class="fa fa-wrench"></i> Read attributes</label>
         <input type="text" id="node-input-read" placeholder="Attribute1, Attribute2">
+        <input type="hidden" id="node-input-readType">
     </div>
 
     <hr>
@@ -95,6 +154,7 @@
     <div class="form-row">
         <label for="node-input-update"><i class="fa fa-wrench"></i> Update attributes</label>
         <input type="text" id="node-input-update" placeholder="Attribute1, Attribute2">
+        <input type="hidden" id="node-input-updateType">
     </div>
 
     <hr>
@@ -113,6 +173,7 @@
     <div class="form-row">
         <label for="node-input-delete"><i class="fa fa-wrench"></i> Delete attributes</label>
         <input type="text" id="node-input-delete" placeholder="Attribute1, Attribute2">
+        <input type="hidden" id="node-input-deleteType">
     </div>
 
     <hr>
@@ -120,6 +181,7 @@
     <div class="form-row">
         <label for="node-input-what"><i class="fa fa-object-group"></i> What</label>
         <input type="text" id="node-input-what" placeholder="Object">
+        <input type="hidden" id="node-input-whatType">
     </div>
 </script>
 
@@ -134,5 +196,5 @@
     <li>CRUD attributes: comma-separated strings that can be given to specify which attributes the corresponding action can edit;</li>
     <li>WHAT: the object to be accessed by the role.</li>
     </ul>
-    <p><b>Note:</b> All text fields can also be specified using the msg attributes (e.g., writing msg.role in an input field will force the node to look inside the content of msg.role). Only names with letters and numbers are supported. In case of CRUD attributes, be sure to provide an array, otherwise the node may fail or work in the wrong way.</p>
+    <p><b>Note:</b> All text fields can also be specified using the msg attributes: to get the content of "msg.role" write only "role" after changing the type. Regarding CRUD attributes, be sure to provide an array, otherwise the node may fail or work in the wrong way.</p>
 </script>

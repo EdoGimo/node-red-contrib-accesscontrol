@@ -4,7 +4,8 @@
         color: '#ca9758',
         defaults: {
             name: {value:""},
-            who: {value:""},
+            who: {value:"", validate: RED.validators.typedInput("whoType")},
+            whoType: { value:"str"},
             createAny: {value:false},
             createOwn: {value:false},
             updateAny: {value:false},
@@ -13,13 +14,31 @@
             readOwn: {value:false},
             deleteAny: {value:false},
             deleteOwn: {value:false},
-            what: {value:""}
+            what: {value:"", validate: RED.validators.typedInput("whatType")},
+            whatType: { value:"str"}
         },
         inputs:1,
         outputs:1,
         icon: "font-awesome/fa-shield",
         label: function() {
             return this.name||"deny";
+        },
+        oneditprepare: function() {
+            $("#node-input-who").typedInput({
+                default: this.whoType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-whoType")
+            });
+            
+            $("#node-input-what").typedInput({
+                default: this.whatType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-whatType")
+            });
+        },
+        onsave: function(){
+            this.whoType = $("#node-input-whoType").val();
+            this.whatType = $("#node-input-whatType").val();
         }
     });
 </script>
@@ -37,6 +56,7 @@
     <div class="form-row">
         <label for="node-input-who"><i class="fa fa-user-circle"></i> Who</label>
         <input type="text" id="node-input-who" placeholder="Role">
+        <input type="hidden" id="node-input-whoType">
     </div>
 
     <hr>
@@ -100,6 +120,7 @@
     <div class="form-row">
         <label for="node-input-what"><i class="fa fa-object-group"></i> What</label>
         <input type="text" id="node-input-what" placeholder="Object">
+        <input type="hidden" id="node-input-whatType">
     </div>
 </script>
 
@@ -113,5 +134,5 @@
     <li>CRUD any/own: the CRUD (Create, Read, Update, Delete) actions, in both the &#39;any&#39; and &#39;own&#39; scopes;</li>
     <li>WHAT: the object to be accessed by the role.</li>
     </ul>
-    <p><b>Note:</b> All text fields can also be specified using the msg attributes (e.g., writing msg.role in an input field will force the node to look inside the content of msg.role). Only names with letters and numbers are supported.</p>
+    <p><b>Note:</b> All text fields can also be specified using the msg attributes: to get the content of "msg.role" write only "role" after changing the type.</p>
 </script>

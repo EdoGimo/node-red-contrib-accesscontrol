@@ -4,6 +4,7 @@ module.exports = function(RED) {
 
         //options
         this.who = config.who;
+        this.whoType = config.whoType;
 
         //C
         this.createAny = config.createAny;
@@ -20,11 +21,19 @@ module.exports = function(RED) {
 
         //get attributes values
         this.create = config.create;
+        this.createType = config.createType;
+
         this.read = config.read;
+        this.readType = config.readType;
+
         this.update = config.update;
+        this.updateType = config.updateType;
+
         this.delete = config.delete;
+        this.deleteType = config.deleteType;
 
         this.what = config.what;
+        this.whatType = config.whatType;
 
         
         //context selection (change ".flow" to ".global" for global context)
@@ -52,47 +61,30 @@ module.exports = function(RED) {
 
             const ac = flowContext.get("accesscontrol");
 
-
-            //check if some fields have a msg as an attribute
-            let re = new RegExp('^msg.[a-zA-Z0-9]+$');
+            //get the actual value of WHO and WHAT if msg was selected
             var create_field = null;
             var read_field = null;
             var update_field = null;     
             var delete_field = null;
 
-            //get actual value
-            //WHO
-            if(re.test(node.who)){
-                var x = eval(node.who);
-                node.warn("Using "+ node.who +" value for WHO.");
-                node.who = x;
+            if(node.whoType == "msg"){
+                node.who = RED.util.getMessageProperty(msg,node.who);
             }
-            //CRUD
-            if(re.test(node.create)){
-                var x = eval(node.create);
-                node.warn("Using "+ node.create +" value for CREATE.");
-                create_field = x;
+            if(node.whatType == "msg"){
+                node.what = RED.util.getMessageProperty(msg,node.what);
             }
-            if(re.test(node.read)){
-                var x = eval(node.read);
-                node.warn("Using "+ node.read +" value for READ.");
-                read_field = x;
+            //CRUD attributes
+            if(node.createType == "msg"){
+                create_field = RED.util.getMessageProperty(msg,node.create);
             }
-            if(re.test(node.update)){
-                var x = eval(node.update);
-                node.warn("Using "+ node.update +" value for UPDATE.");
-                update_field = x;
+            if(node.readType == "msg"){
+                read_field = RED.util.getMessageProperty(msg,node.read);
             }
-            if(re.test(node.delete)){
-                var x = eval(node.delete);
-                node.warn("Using "+ node.delete +" value for DELETE.");
-                delete_field = x;
+            if(node.updateType == "msg"){
+                update_field = RED.util.getMessageProperty(msg,node.update);
             }
-            //WHAT
-            if(re.test(node.what)){
-                var x = eval(node.what);
-                node.warn("Using "+ node.what +" value for WHAT.");
-                node.what = x;
+            if(node.deleteType == "msg"){
+                delete_field = RED.util.getMessageProperty(msg,node.delete);
             }
             
 
@@ -100,14 +92,14 @@ module.exports = function(RED) {
             //IF both the Any and Own are selected, Any is enough
             
             //=== CREATE ===
-            //if attributes were specified AND the array was NOT set
+            //if attributes are specified AND the array is NOT in a msg
             if(node.create && !create_field){
                 if(node.createAny){
                     ac.grant(node.who).createAny(node.what, node.create.split(",").map(item=>item.trim()) );
                 } else if(node.createOwn){
                     ac.grant(node.who).createOwn(node.what, node.create.split(",").map(item=>item.trim()) );
                 }
-            //if attributes were NOT specified OR the array was set
+            //if attributes are NOT specified OR the array is in a msg
             } else {
                 if(node.createAny){
                     ac.grant(node.who).createAny(node.what, create_field);  //second argument potentially null
@@ -117,14 +109,14 @@ module.exports = function(RED) {
             }
             
             //=== READ ===
-            //if attributes were specified AND the array was NOT set
+            //if attributes are specified AND the array is NOT in a msg
             if(node.read && !read_field){
                 if(node.readAny){
                     ac.grant(node.who).readAny(node.what, node.read.split(",").map(item=>item.trim()) );
                 } else if(node.readOwn){
                     ac.grant(node.who).readOwn(node.what, node.read.split(",").map(item=>item.trim()) );
                 }
-            //if attributes were NOT specified OR the array was set
+            //if attributes are NOT specified OR the array is in a msg
             } else {
                 if(node.readAny){
                     ac.grant(node.who).readAny(node.what, read_field);  //second argument potentially null
@@ -134,14 +126,14 @@ module.exports = function(RED) {
             }
 
             //=== UPDATE ===
-            //if attributes were specified AND the array was NOT set
+            //if attributes are specified AND the array is NOT in a msg
             if(node.update && !update_field){
                 if(node.updateAny){
                     ac.grant(node.who).updateAny(node.what, node.update.split(",").map(item=>item.trim()) );
                 } else if(node.updateOwn){
                     ac.grant(node.who).updateOwn(node.what, node.update.split(",").map(item=>item.trim()) );
                 }
-            //if attributes were NOT specified OR the array was set
+            //if attributes are NOT specified OR the array is in a msg
             } else {
                 if(node.updateAny){
                     ac.grant(node.who).updateAny(node.what, update_field);  //second argument potentially null
@@ -151,14 +143,14 @@ module.exports = function(RED) {
             }
 
             //=== DELETE ===
-            //if attributes were specified AND the array was NOT set
+            //if attributes are specified AND the array is NOT in a msg
             if(node.delete && !delete_field){
                 if(node.deleteAny){
                     ac.grant(node.who).deleteAny(node.what, node.delete.split(",").map(item=>item.trim()) );
                 } else if(node.deleteOwn){
                     ac.grant(node.who).deleteOwn(node.what, node.delete.split(",").map(item=>item.trim()) );
                 }
-            //if attributes were NOT specified OR the array was set
+            //if attributes are NOT specified OR the array is in a msg
             } else {
                 if(node.deleteAny){
                     ac.grant(node.who).deleteAny(node.what, delete_field);  //second argument potentially null

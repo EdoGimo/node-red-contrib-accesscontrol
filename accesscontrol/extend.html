@@ -4,14 +4,33 @@
         color: '#ca9758',
         defaults: {
             name: {value:""},
-            who: {value:""},
-            what: {value:""}
+            who: {value:"", validate: RED.validators.typedInput("whoType")},
+            whoType: { value:"str"},
+            what: {value:"", validate: RED.validators.typedInput("whatType")},
+            whatType: { value:"str"}
         },
         inputs:1,
         outputs:1,
         icon: "font-awesome/fa-shield",
         label: function() {
             return this.name||"extend";
+        },
+        oneditprepare: function() {
+            $("#node-input-who").typedInput({
+                default: this.whoType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-whoType")
+            });
+            
+            $("#node-input-what").typedInput({
+                default: this.whatType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-whatType")
+            });
+        },
+        onsave: function(){
+            this.whoType = $("#node-input-whoType").val();
+            this.whatType = $("#node-input-whatType").val();
         }
     });
 </script>
@@ -29,11 +48,13 @@
     <div class="form-row">
         <label for="node-input-who"><i class="fa fa-user-circle"></i> Beneficiary</label>
         <input type="text" id="node-input-who" placeholder="Role">
+        <input type="hidden" id="node-input-whoType">
     </div>
 
     <div class="form-row">
         <label for="node-input-what"><i class="fa fa-user-circle-o"></i> Inherit from</label>
         <input type="text" id="node-input-what" placeholder="Role">
+        <input type="hidden" id="node-input-whatType">
     </div>
 </script>
 
@@ -46,7 +67,7 @@
         <li>BENEFICIARY: the role that will receive the permissions;</li>
         <li>INHERIT FROM: the role from which permissions are granted to the previous role.</li>
     </ul>
-    <p><b>Note:</b> All text fields can also be specified using the msg attributes (e.g., writing msg.role in an input field will force the node to look inside the content of msg.role). Only names with letters and numbers are supported.</p>
+    <p><b>Note:</b> All text fields can also be specified using the msg attributes: to get the content of "msg.role" write only "role" after changing the type.</p>
     <p>Notes on inheritance (from the link above, without examples):
         <ul>
             <li>A role cannot extend itself.</li>

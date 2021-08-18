@@ -4,9 +4,11 @@ module.exports = function(RED) {
 
         //options
         this.who = config.who;
+        this.whoType = config.whoType;
         this.crud = config.crud;
         this.any = config.any;
         this.what = config.what;
+        this.whatType = config.whatType;
 
         //context selection (change ".flow" to ".global" for global context)
         var flowContext = this.context().flow;
@@ -21,21 +23,13 @@ module.exports = function(RED) {
             }
             const ac = flowContext.get("accesscontrol");
 
-            //check if the who and what fields have a msg attribute
-            let re = new RegExp('^msg.[a-zA-Z0-9]+$');
-
-            //get actual value
-            if(re.test(node.who)){
-                var x = eval(node.who);
-                node.warn("Using "+ node.who +" value for WHO.");
-                node.who = x;
+            //get the actual value of WHO and WHAT if msg was selected
+            if(node.whoType == "msg"){
+                node.who = RED.util.getMessageProperty(msg,node.who);
             }
-            if(re.test(node.what)){
-                var x = eval(node.what);
-                node.warn("Using "+ node.what +" value for WHAT.");
-                node.what = x;
+            if(node.whatType == "msg"){
+                node.what = RED.util.getMessageProperty(msg,node.what);
             }
-
 
             var permission = null;
 
