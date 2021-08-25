@@ -1,5 +1,5 @@
-module.imports = function(RED) {
-    function ImportNode(config) {
+module.exports = function(RED) {
+    function ACImportNode(config) {
         RED.nodes.createNode(this,config);
 
         //options
@@ -13,26 +13,21 @@ module.imports = function(RED) {
 
             const ac = flowContext.get("accesscontrol");
 
-            //read grants from payload (string)
-            msg.payload = ac.setGrants(JSON.parse(msg.payload));
-
             //catch AccessControlError
             try {
                 //read grants from payload (string)
-                msg.payload = ac.setGrants(JSON.parse(msg.payload));
+                ac.setGrants(msg.payload);
+                node.warn("Permissions successfully imported.");
 
-                return null;
+                //clear msg
+                msg = {};
+
+                node.send(msg);
             }
             catch(err) {
                 node.warn("Import node failed. Check formatting of the payload string.");
             }
-
-
-            //clear message
-            msg = {};
-
-            node.send(msg);
         });
     }
-    RED.nodes.registerType("import", ImportNode);
+    RED.nodes.registerType("AC import", ACImportNode);
 }

@@ -1,5 +1,5 @@
 module.exports = function(RED) {
-    function ExportNode(config) {
+    function ACExportNode(config) {
         RED.nodes.createNode(this,config);
 
         //options
@@ -13,7 +13,7 @@ module.exports = function(RED) {
 
             const ac = flowContext.get("accesscontrol");
 
-            //clear message
+            //clear msg
             msg = {};
             //add grants to payload (string)
             msg.payload = ac.getGrants();
@@ -22,5 +22,5 @@ module.exports = function(RED) {
             node.send(msg);
         });
     }
-    RED.nodes.registerType("export", ExportNode);
+    RED.nodes.registerType("AC export", ACExportNode);
 }

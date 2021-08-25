@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('import',{
+    RED.nodes.registerType('AC export',{
         category: 'access control',
         color: '#ca9758',
         defaults: {
@@ -7,15 +7,15 @@
         },
         inputs:1,
         outputs:1,
-        icon: "font-awesome/fa-upload",
+        icon: "font-awesome/fa-download",
         label: function() {
-            return this.name||"import";
+            return this.name||"AC export";
         }
     });
 </script>
 
 
-<script type="text/html" data-template-name="import">
+<script type="text/html" data-template-name="AC export">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -23,8 +23,8 @@
     <p>Check the "Help" tab for more information on the parameters.</p>
 </script>
 
-<script type="text/html" data-help-name="import">
+<script type="text/html" data-help-name="AC export">
     <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
-    <h4>Import node</h4>
-    <p>This node imports, from a "msg.payload" string, the permissions that were set. Ensure the string contains the permission object in the proper format.</p>
+    <h4>AC Export node</h4>
+    <p>This node exports, as a "msg.payload" string, the permissions that were set.</p>
 </script>
