@@ -29,6 +29,8 @@ If necessary, restart Node-RED.
 ### How to use
 There are at the moment 5 nodes:
 - **AC set**: creates the AccessControl instance that contains all permissions (no database is used);
+- **AC export**: export the AccessControl permissions as a string (JSON format);
+- **AC import**: import the AccessControl permissions from a string (JSON format);
 - **grant**: enables to grant to a role a CRUD action (Create, Read, Update, Delete) over a resource;
 - **extend**: a quick way of granting to a role the same permissions of another role;
 - **deny**: drops CRUD permissions previously set with grant/extend;
