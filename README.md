@@ -5,7 +5,7 @@ A [Node-RED](https://nodered.org/) implementation of the [accesscontrol](https:/
 
 ### Prerequisites
 
-Node-RED installed. Tested on version 2.0.1.
+Node-RED installed. Tested on version 2.0.5.
 
 
 ### Installation
@@ -27,7 +27,7 @@ If necessary, restart Node-RED.
 
 
 ### How to use
-There are at the moment 5 nodes:
+There are (at the moment) 5 nodes:
 - **AC set**: creates the AccessControl instance that contains all permissions (no database is used);
 - **AC export**: export the AccessControl permissions as a string (JSON format);
 - **AC import**: import the AccessControl permissions from a string (JSON format);
@@ -35,9 +35,16 @@ There are at the moment 5 nodes:
 - **extend**: a quick way of granting to a role the same permissions of another role;
 - **deny**: drops CRUD permissions previously set with grant/extend;
 - **permission**: checks if specific permissions are implemented or not.
+- **permissions**: checks if multiple permissions are implemented or not.
 
 Detailed information about each node can be read in the help tab of Node-RED.
 
+Permission are defined by specification of 5 properties:
+- role: the user or group of users receiving the authorization;
+- resource: what the role can or cannot interact with;
+- action: how the role can interact with the resource (CRUD actions);
+- possession: specifies if the role can interact with the resource of 'any' other role or just with its 'own';
+- attributes: optional values related to the resource, to provide a more accurate permission.
 
 
 ### Examples
@@ -47,6 +54,3 @@ Detailed information about each node can be read in the help tab of Node-RED.
 ### Contribution
 
 Feel free to add more options or whatever may be of use.
-
-# WORK IN PROGRESS
-This node is not completed yet.

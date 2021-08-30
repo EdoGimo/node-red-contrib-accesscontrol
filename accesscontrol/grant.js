@@ -8,16 +8,24 @@ module.exports = function(RED) {
 
         //C
         this.createAny = config.createAny;
+        this.createAnyType = config.createAnyType;
         this.createOwn = config.createOwn;
+        this.createOwnType = config.createOwnType;
         //R
         this.readAny = config.readAny;
+        this.readAnyType = config.readAnyType;
         this.readOwn = config.readOwn;
+        this.readOwnType = config.readOwnType;
         //U
         this.updateAny = config.updateAny;
+        this.updateAnyType = config.updateAnyType;
         this.updateOwn = config.updateOwn;
+        this.updateOwnType = config.updateOwnType;
         //D
         this.deleteAny = config.deleteAny;
+        this.deleteAnyType = config.deleteAnyType;
         this.deleteOwn = config.deleteOwn;
+        this.deleteOwnType = config.deleteOwnType;
 
         //get attributes values
         this.create = config.create;
@@ -53,15 +61,16 @@ module.exports = function(RED) {
             if(!node.createAny && !node.createOwn && 
                 !node.readAny && !node.readOwn && 
                 !node.updateAny && !node.updateOwn && 
-                !node.deleteAny && !node.deleteOwn){
+                !node.deleteAny && !node.deleteOwn)
+            {
                     node.warn("Check at least one action!");
                     return null;
-                }
+            }
 
 
             const ac = flowContext.get("accesscontrol");
 
-            //get the actual value of WHO and WHAT if msg was selected
+            //get the actual value if msg was selected
             var create_field = null;
             var read_field = null;
             var update_field = null;     
@@ -72,6 +81,31 @@ module.exports = function(RED) {
             }
             if(node.whatType == "msg"){
                 node.what = RED.util.getMessageProperty(msg,node.what);
+            }
+            //CRUD
+            if(node.createAnyType == "msg"){
+                node.createAny = RED.util.getMessageProperty(msg,node.createAny);
+            }
+            if(node.createOwnType == "msg"){
+                node.createOwn = RED.util.getMessageProperty(msg,node.createOwn);
+            }
+            if(node.readAnyType == "msg"){
+                node.readAny = RED.util.getMessageProperty(msg,node.readAny);
+            }
+            if(node.readOwnType == "msg"){
+                node.readOwn = RED.util.getMessageProperty(msg,node.readOwn);
+            }
+            if(node.updateAnyType == "msg"){
+                node.updateAny = RED.util.getMessageProperty(msg,node.updateAny);
+            }
+            if(node.updateOwnType == "msg"){
+                node.updateOwn = RED.util.getMessageProperty(msg,node.updateOwn);
+            }
+            if(node.deleteAnyType == "msg"){
+                node.deleteAny = RED.util.getMessageProperty(msg,node.deleteAny);
+            }
+            if(node.deleteOwnType == "msg"){
+                node.deleteOwn = RED.util.getMessageProperty(msg,node.deleteOwn);
             }
             //CRUD attributes
             if(node.createType == "msg"){
@@ -87,6 +121,14 @@ module.exports = function(RED) {
                 delete_field = RED.util.getMessageProperty(msg,node.delete);
             }
             
+            //check if there is an action selected (after converting msg)
+            if(!node.createAny && !node.createOwn && 
+                !node.readAny && !node.readOwn && 
+                !node.updateAny && !node.updateOwn && 
+                !node.deleteAny && !node.deleteOwn)
+            {
+                    node.warn("Check at least one action!");
+            }
 
             //grant permissions
             //IF both the Any and Own are selected, Any is enough
@@ -158,7 +200,7 @@ module.exports = function(RED) {
                     ac.grant(node.who).deleteOwn(node.what, delete_field);  //second argument potentially null
                 }
             }
-           
+            
 
             node.send(msg);
         });
