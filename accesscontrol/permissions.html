@@ -4,7 +4,7 @@
         color: '#87a980',
         defaults: {
             name: {value:""},
-            who: {value:"", validate: RED.validators.typedInput("whoType")},
+            who: {value:"", validate: RED.validators.typedInput("whoType"), required: true},
             whoType: { value:"str"},
             
             createAny: {value:false, validate: RED.validators.typedInput("createAnyType")},
@@ -27,7 +27,7 @@
             deleteOwn: {value:false, validate: RED.validators.typedInput("deleteOwnType")},
             deleteOwnType: { value:"bool"},
 
-            what: {value:"", validate: RED.validators.typedInput("whatType")},
+            what: {value:"", validate: RED.validators.typedInput("whatType"), required: true},
             whatType: { value:"str"}
         },
         inputs:1,

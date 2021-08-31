@@ -4,11 +4,11 @@
         color: '#87a980',
         defaults: {
             name: {value:""},
-            who: {value:"", validate: RED.validators.typedInput("whoType")},
+            who: {value:"", validate: RED.validators.typedInput("whoType"), required: true},
             whoType: { value:"str"},
-            crud: {value:"create"},
+            crud: {value:"create", required: true},
             any: {value:false},
-            what: {value:"", validate: RED.validators.typedInput("whatType")},
+            what: {value:"", validate: RED.validators.typedInput("whatType"), required: true},
             whatType: { value:"str"}
         },
         inputs:1,
@@ -68,6 +68,8 @@
         <input type="text" id="node-input-what" placeholder="Object">
         <input type="hidden" id="node-input-whatType">
     </div>
+    &nbsp;
+    
 </script>
 
 <script type="text/html" data-help-name="permission">

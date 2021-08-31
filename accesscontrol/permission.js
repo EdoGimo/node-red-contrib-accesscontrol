@@ -17,56 +17,61 @@ module.exports = function(RED) {
         var node = this;
         node.on('input', function(msg) {
 
-            if(!node.who || !node.crud || !node.what ){
-                node.warn("Edit the configuration first!");
-                return null;
-            }
-            const ac = flowContext.get("accesscontrol");
-
             //get the actual value of WHO and WHAT if msg was selected
             if(node.whoType == "msg"){
-                node.who = RED.util.getMessageProperty(msg,node.who);
+                whoField = RED.util.getMessageProperty(msg,node.who);
+            }else{
+                whoField = node.who;
             }
             if(node.whatType == "msg"){
-                node.what = RED.util.getMessageProperty(msg,node.what);
+                whatField = RED.util.getMessageProperty(msg,node.what);
+            }else{
+                whatField = node.what;
             }
 
+            if(!whoField || !whatField || !node.crud){
+                node.warn("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
+                return null;
+            }
+
+            
+            const ac = flowContext.get("accesscontrol");
             var permission = null;
 
             switch(node.crud){
                 //CREATE
                 case "create":
                     if(node.any){
-                        permission = ac.can(node.who).createAny(node.what);
+                        permission = ac.can(whoField).createAny(whatField);
                     }else{
-                        permission = ac.can(node.who).createOwn(node.what);
+                        permission = ac.can(whoField).createOwn(whatField);
                     }
                     break;
                 
                 //READ
                 case "read":
                     if(node.any){
-                        permission = ac.can(node.who).readAny(node.what);
+                        permission = ac.can(whoField).readAny(whatField);
                     }else{
-                        permission = ac.can(node.who).readOwn(node.what);
+                        permission = ac.can(whoField).readOwn(whatField);
                     }
                     break;
                 
                 //UPDATE
                 case "update":
                     if(node.any){
-                        permission = ac.can(node.who).updateAny(node.what);
+                        permission = ac.can(whoField).updateAny(whatField);
                     }else{
-                        permission = ac.can(node.who).updateOwn(node.what);
+                        permission = ac.can(whoField).updateOwn(whatField);
                     }
                     break;
                 
                 //DELETE
                 case "delete":
                     if(node.any){
-                        permission = ac.can(node.who).deleteAny(node.what);
+                        permission = ac.can(whoField).deleteAny(whatField);
                     }else{
-                        permission = ac.can(node.who).deleteOwn(node.what);
+                        permission = ac.can(whoField).deleteOwn(whatField);
                     }
                     break;
 

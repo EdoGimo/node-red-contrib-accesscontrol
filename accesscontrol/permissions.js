@@ -36,70 +36,95 @@ module.exports = function(RED) {
         var node = this;
         node.on('input', function(msg) {
 
-            if(!node.who || !node.what ){
-                node.warn("Edit the configuration first!");
+            //get the actual value of WHO and WHAT if msg was selected
+            if(node.whoType == "msg"){
+                whoField = RED.util.getMessageProperty(msg,node.who);
+            }else{
+                whoField = node.who;
+            }
+            if(node.whatType == "msg"){
+                whatField = RED.util.getMessageProperty(msg,node.what);
+            }else{
+                whatField = node.what;
+            }
+
+            //check if WHO or WHAT are specified
+            if(!whoField || !whatField ){
+                node.warn("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
+                return null;
+            }
+            
+
+            //get the actual value of CRUD actions
+            if(node.createAnyType == "msg"){
+                createAnyField = RED.util.getMessageProperty(msg,node.createAny);
+            }else{
+                createAnyField = node.createAny;
+            }
+            if(node.createOwnType == "msg"){
+                createOwnField = RED.util.getMessageProperty(msg,node.createOwn);
+            }else{
+                createOwnField = node.createOwn;
+            }
+            if(node.readAnyType == "msg"){
+                readAnyField = RED.util.getMessageProperty(msg,node.readAny);
+            }else{
+                readAnyField = node.readAny;
+            }
+            if(node.readOwnType == "msg"){
+                readOwnField = RED.util.getMessageProperty(msg,node.readOwn);
+            }else{
+                readOwnField = node.readOwn;
+            }
+            if(node.updateAnyType == "msg"){
+                updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
+            }else{
+                updateAnyField = node.updateAny;
+            }
+            if(node.updateOwnType == "msg"){
+                updateOwnField = RED.util.getMessageProperty(msg,node.updateOwn);
+            }else{
+                updateOwnField = node.updateOwn;
+            }
+            if(node.deleteAnyType == "msg"){
+                deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
+            }else{
+                deleteAnyField = node.deleteAny;
+            }
+            if(node.deleteOwnType == "msg"){
+                deleteOwnField = RED.util.getMessageProperty(msg,node.deleteOwn);
+            }else{
+                deleteOwnField = node.deleteOwn;
+            }
+
+            //check if there is an action selected
+            if (!createAnyField && !createOwnField && 
+                !readAnyField   && !readOwnField && 
+                !updateAnyField && !updateOwnField && 
+                !deleteAnyField && !deleteOwnField)
+            {
+                node.warn("No CRUD action specified. Check at least one (or that msg attributes are not all empty)!");
                 return null;
             }
 
-            if (!node.createAny && !node.createOwn && 
-                !node.readAny   && !node.readOwn && 
-                !node.updateAny && !node.updateOwn && 
-                !node.deleteAny && !node.deleteOwn)
-            {
-                node.warn("Select at least one action!")  
-                return null;  
-            }
 
             const ac = flowContext.get("accesscontrol");
-
-            //get the actual value of WHO and WHAT if msg was selected
-            if(node.whoType == "msg"){
-                node.who = RED.util.getMessageProperty(msg,node.who);
-            }
-            if(node.whatType == "msg"){
-                node.what = RED.util.getMessageProperty(msg,node.what);
-            }
-            //CRUD
-            if(node.createAnyType == "msg"){
-                node.createAny = RED.util.getMessageProperty(msg,node.createAny);
-            }
-            if(node.createOwnType == "msg"){
-                node.createOwn = RED.util.getMessageProperty(msg,node.createOwn);
-            }
-            if(node.readAnyType == "msg"){
-                node.readAny = RED.util.getMessageProperty(msg,node.readAny);
-            }
-            if(node.readOwnType == "msg"){
-                node.readOwn = RED.util.getMessageProperty(msg,node.readOwn);
-            }
-            if(node.updateAnyType == "msg"){
-                node.updateAny = RED.util.getMessageProperty(msg,node.updateAny);
-            }
-            if(node.updateOwnType == "msg"){
-                node.updateOwn = RED.util.getMessageProperty(msg,node.updateOwn);
-            }
-            if(node.deleteAnyType == "msg"){
-                node.deleteAny = RED.util.getMessageProperty(msg,node.deleteAny);
-            }
-            if(node.deleteOwnType == "msg"){
-                node.deleteOwn = RED.util.getMessageProperty(msg,node.deleteOwn);
-            }
-
-            //check if there is an action selected (after converting msg)
-            if(!node.createAny && !node.createOwn && 
-                !node.readAny && !node.readOwn && 
-                !node.updateAny && !node.updateOwn && 
-                !node.deleteAny && !node.deleteOwn)
-            {
-                    node.warn("Check at least one action!");
-                    return null;
-            }
 
             var permissions = null;
             var proceed = true;
 
-            if(node.createAny){
-                permissions = ac.can(node.who).createAny(node.what);
+            if (! (ac.getRoles()).includes(whoField)){
+                node.warn("The WHO role does not exist. Create it with the grant node before.");
+                return null;
+            }
+
+            if (! (ac.getResources()).includes(whatField)){
+                node.warn("The WHAT role does not exist. Create it with the grant node before.");
+                return null;
+            }
+
+            if(createAnyField){
+                permissions = ac.can(whoField).createAny(whatField);
 
                 //if permission is false, avoid all the following IFs
                 if(permissions.granted == false){
@@ -109,8 +134,8 @@ module.exports = function(RED) {
                     msg.createAnyAttr = permissions.attributes;
                 }
             }
-            if(proceed && node.createOwn){
-                permissions = ac.can(node.who).createOwn(node.what);
+            if(proceed && createOwnField){
+                permissions = ac.can(whoField).createOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
@@ -118,16 +143,16 @@ module.exports = function(RED) {
                 }
             }
 
-            if(proceed && node.readAny){
-                permissions = ac.can(node.who).readAny(node.what);
+            if(proceed && readAnyField){
+                permissions = ac.can(whoField).readAny(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
                     msg.readAnyAttr = permissions.attributes;
                 }
             }
-            if(proceed && node.readOwn){
-                permissions = ac.can(node.who).readOwn(node.what);
+            if(proceed && readOwnField){
+                permissions = ac.can(whoField).readOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
@@ -135,16 +160,16 @@ module.exports = function(RED) {
                 }
             }
 
-            if(proceed && node.updateAny){
-                permissions = ac.can(node.who).updateAny(node.what);
+            if(proceed && updateAnyField){
+                permissions = ac.can(whoField).updateAny(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
                     msg.updateAnyAttr = permissions.attributes;
                 }
             }
-            if(proceed && node.updateOwn){
-                permissions = ac.can(node.who).updateOwn(node.what);
+            if(proceed && updateOwnField){
+                permissions = ac.can(whoField).updateOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
@@ -152,16 +177,16 @@ module.exports = function(RED) {
                 }
             }
 
-            if(proceed && node.deleteAny){
-                permissions = ac.can(node.who).deleteAny(node.what);
+            if(proceed && deleteAnyField){
+                permissions = ac.can(whoField).deleteAny(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
                     msg.deleteAnyAttr = permissions.attributes;
                 }
             }
-            if(proceed && node.deleteOwn){
-                permissions = ac.can(node.who).deleteOwn(node.what);
+            if(proceed && deleteOwnField){
+                permissions = ac.can(whoField).deleteOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{

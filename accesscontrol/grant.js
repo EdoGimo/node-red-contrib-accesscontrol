@@ -51,62 +51,66 @@ module.exports = function(RED) {
         var node = this;
         node.on('input', function(msg) {
 
-            //check if configuration was set
-            if(!node.who || !node.what){
-                node.warn("Edit the configuration first!");
+            //get the actual value of WHO and WHAT if msg was selected
+            if(node.whoType == "msg"){
+                whoField = RED.util.getMessageProperty(msg,node.who);
+            }else{
+                whoField = node.who;
+            }
+            if(node.whatType == "msg"){
+                whatField = RED.util.getMessageProperty(msg,node.what);
+            }else{
+                whatField = node.what;
+            }
+
+            //check if WHO or WHAT are specified
+            if(!whoField || !whatField ){
+                node.warn("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
                 return null;
             }
 
-            //check if there is an action selected
-            if(!node.createAny && !node.createOwn && 
-                !node.readAny && !node.readOwn && 
-                !node.updateAny && !node.updateOwn && 
-                !node.deleteAny && !node.deleteOwn)
-            {
-                    node.warn("Check at least one action!");
-                    return null;
-            }
-
-
-            const ac = flowContext.get("accesscontrol");
-
-            //get the actual value if msg was selected
-            var create_field = null;
-            var read_field = null;
-            var update_field = null;     
-            var delete_field = null;
-
-            if(node.whoType == "msg"){
-                node.who = RED.util.getMessageProperty(msg,node.who);
-            }
-            if(node.whatType == "msg"){
-                node.what = RED.util.getMessageProperty(msg,node.what);
-            }
-            //CRUD
+            //get the actual value of CRUD actions
             if(node.createAnyType == "msg"){
-                node.createAny = RED.util.getMessageProperty(msg,node.createAny);
+                createAnyField = RED.util.getMessageProperty(msg,node.createAny);
+            }else{
+                createAnyField = node.createAny;
             }
             if(node.createOwnType == "msg"){
-                node.createOwn = RED.util.getMessageProperty(msg,node.createOwn);
+                createOwnField = RED.util.getMessageProperty(msg,node.createOwn);
+            }else{
+                createOwnField = node.createOwn;
             }
             if(node.readAnyType == "msg"){
-                node.readAny = RED.util.getMessageProperty(msg,node.readAny);
+                readAnyField = RED.util.getMessageProperty(msg,node.readAny);
+            }else{
+                readAnyField = node.readAny;
             }
             if(node.readOwnType == "msg"){
-                node.readOwn = RED.util.getMessageProperty(msg,node.readOwn);
+                readOwnField = RED.util.getMessageProperty(msg,node.readOwn);
+            }else{
+                readOwnField = node.readOwn;
             }
             if(node.updateAnyType == "msg"){
-                node.updateAny = RED.util.getMessageProperty(msg,node.updateAny);
+                updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
+            }else{
+                updateAnyField = node.updateAny;
             }
             if(node.updateOwnType == "msg"){
-                node.updateOwn = RED.util.getMessageProperty(msg,node.updateOwn);
+                updateOwnField = RED.util.getMessageProperty(msg,node.updateOwn);
+            }else{
+                updateOwnField = node.updateOwn;
             }
             if(node.deleteAnyType == "msg"){
-                node.deleteAny = RED.util.getMessageProperty(msg,node.deleteAny);
+                deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
+            }else{
+                deleteAnyField = node.deleteAny;
             }
             if(node.deleteOwnType == "msg"){
-                node.deleteOwn = RED.util.getMessageProperty(msg,node.deleteOwn);
+                deleteOwnField = RED.util.getMessageProperty(msg,node.deleteOwn);
+            }else{
+                deleteOwnField = node.deleteOwn;
             }
+
             //CRUD attributes
             if(node.createType == "msg"){
                 create_field = RED.util.getMessageProperty(msg,node.create);
@@ -121,83 +125,86 @@ module.exports = function(RED) {
                 delete_field = RED.util.getMessageProperty(msg,node.delete);
             }
             
-            //check if there is an action selected (after converting msg)
-            if(!node.createAny && !node.createOwn && 
-                !node.readAny && !node.readOwn && 
-                !node.updateAny && !node.updateOwn && 
-                !node.deleteAny && !node.deleteOwn)
+            //check if there is an action selected
+            if (!createAnyField && !createOwnField && 
+                !readAnyField   && !readOwnField && 
+                !updateAnyField && !updateOwnField && 
+                !deleteAnyField && !deleteOwnField)
             {
-                    node.warn("Check at least one action!");
+                    node.warn("Check at least one action or check that the msg attributes are not empty!");
+                    return null;
             }
 
+
             //grant permissions
+            const ac = flowContext.get("accesscontrol");
             //IF both the Any and Own are selected, Any is enough
             
             //=== CREATE ===
             //if attributes are specified AND the array is NOT in a msg
             if(node.create && !create_field){
-                if(node.createAny){
-                    ac.grant(node.who).createAny(node.what, node.create.split(",").map(item=>item.trim()) );
-                } else if(node.createOwn){
-                    ac.grant(node.who).createOwn(node.what, node.create.split(",").map(item=>item.trim()) );
+                if(createAnyField){
+                    ac.grant(whoField).createAny(whatField, node.create.split(",").map(item=>item.trim()) );
+                } else if(createOwnField){
+                    ac.grant(whoField).createOwn(whatField, node.create.split(",").map(item=>item.trim()) );
                 }
             //if attributes are NOT specified OR the array is in a msg
             } else {
-                if(node.createAny){
-                    ac.grant(node.who).createAny(node.what, create_field);  //second argument potentially null
-                } else if(node.createOwn){
-                    ac.grant(node.who).createOwn(node.what, create_field);  //second argument potentially null
+                if(createAnyField){
+                    ac.grant(whoField).createAny(whatField, create_field);  //second argument potentially null
+                } else if(createOwnField){
+                    ac.grant(whoField).createOwn(whatField, create_field);  //second argument potentially null
                 }
             }
             
             //=== READ ===
             //if attributes are specified AND the array is NOT in a msg
             if(node.read && !read_field){
-                if(node.readAny){
-                    ac.grant(node.who).readAny(node.what, node.read.split(",").map(item=>item.trim()) );
-                } else if(node.readOwn){
-                    ac.grant(node.who).readOwn(node.what, node.read.split(",").map(item=>item.trim()) );
+                if(readAnyField){
+                    ac.grant(whoField).readAny(whatField, node.read.split(",").map(item=>item.trim()) );
+                } else if(readOwnField){
+                    ac.grant(whoField).readOwn(whatField, node.read.split(",").map(item=>item.trim()) );
                 }
             //if attributes are NOT specified OR the array is in a msg
             } else {
-                if(node.readAny){
-                    ac.grant(node.who).readAny(node.what, read_field);  //second argument potentially null
-                } else if(node.readOwn){
-                    ac.grant(node.who).readOwn(node.what, read_field);  //second argument potentially null
+                if(readAnyField){
+                    ac.grant(whoField).readAny(whatField, read_field);  //second argument potentially null
+                } else if(readOwnField){
+                    ac.grant(whoField).readOwn(whatField, read_field);  //second argument potentially null
                 }
             }
 
             //=== UPDATE ===
             //if attributes are specified AND the array is NOT in a msg
             if(node.update && !update_field){
-                if(node.updateAny){
-                    ac.grant(node.who).updateAny(node.what, node.update.split(",").map(item=>item.trim()) );
-                } else if(node.updateOwn){
-                    ac.grant(node.who).updateOwn(node.what, node.update.split(",").map(item=>item.trim()) );
+                if(updateAnyField){
+                    ac.grant(whoField).updateAny(whatField, node.update.split(",").map(item=>item.trim()) );
+                } else if(updateOwnField){
+                    ac.grant(whoField).updateOwn(whatField, node.update.split(",").map(item=>item.trim()) );
                 }
             //if attributes are NOT specified OR the array is in a msg
             } else {
-                if(node.updateAny){
-                    ac.grant(node.who).updateAny(node.what, update_field);  //second argument potentially null
-                } else if(node.updateOwn){
-                    ac.grant(node.who).updateOwn(node.what, update_field);  //second argument potentially null
+                if(updateAnyField){
+                    ac.grant(whoField).updateAny(whatField, update_field);  //second argument potentially null
+                } else if(updateOwnField){
+                    ac.grant(whoField).updateOwn(whatField, update_field);  //second argument potentially null
                 }
             }
 
             //=== DELETE ===
             //if attributes are specified AND the array is NOT in a msg
             if(node.delete && !delete_field){
-                if(node.deleteAny){
-                    ac.grant(node.who).deleteAny(node.what, node.delete.split(",").map(item=>item.trim()) );
-                } else if(node.deleteOwn){
-                    ac.grant(node.who).deleteOwn(node.what, node.delete.split(",").map(item=>item.trim()) );
+                if(deleteAnyField){
+                    ac.grant(whoField).deleteAny(whatField, node.delete.split(",").map(item=>item.trim()) );
+                } else if(deleteOwnField){
+                    ac.grant(whoField).deleteOwn(whatField, node.delete.split(",").map(item=>item.trim()) );
                 }
             //if attributes are NOT specified OR the array is in a msg
             } else {
-                if(node.deleteAny){
-                    ac.grant(node.who).deleteAny(node.what, delete_field);  //second argument potentially null
-                } else if(node.deleteOwn){
-                    ac.grant(node.who).deleteOwn(node.what, delete_field);  //second argument potentially null
+                if(deleteAnyField){
+                    ac.grant(whoField).deleteAny(whatField, delete_field);  //second argument potentially null
+                } else if(deleteOwnField){
+                    ac.grant(whoField).deleteOwn(whatField, delete_field);  //second argument potentially null
                 }
             }
             
