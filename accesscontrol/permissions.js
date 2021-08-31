@@ -36,6 +36,9 @@ module.exports = function(RED) {
         var node = this;
         node.on('input', function(msg) {
 
+            var whoField;
+            var whatField;
+
             //get the actual value of WHO and WHAT if msg was selected
             if(node.whoType == "msg"){
                 whoField = RED.util.getMessageProperty(msg,node.who);
@@ -55,46 +58,64 @@ module.exports = function(RED) {
             }
             
 
-            //get the actual value of CRUD actions
+            var createAnyField;
+            var createOwnField;
+            var readAnyField;
+            var readOwnField;
+            var updateAnyField;
+            var updateOwnField;
+            var deleteAnyField;
+            var deleteOwnField;
+
+            //get the actual value of CRUD actions if is in msg + convert to boolean
             if(node.createAnyType == "msg"){
                 createAnyField = RED.util.getMessageProperty(msg,node.createAny);
+                createAnyField = createAnyField === 'true';
+            //import as a boolean from the node otherwise
             }else{
-                createAnyField = node.createAny;
+                createAnyField = node.createAny === 'true';
             }
             if(node.createOwnType == "msg"){
                 createOwnField = RED.util.getMessageProperty(msg,node.createOwn);
+                createOwnField = createOwnField === 'true';
             }else{
-                createOwnField = node.createOwn;
+                createOwnField = node.createOwn === 'true';
             }
             if(node.readAnyType == "msg"){
                 readAnyField = RED.util.getMessageProperty(msg,node.readAny);
+                readAnyField = readAnyField === 'true';
             }else{
-                readAnyField = node.readAny;
+                readAnyField = node.readAny === 'true';
             }
             if(node.readOwnType == "msg"){
                 readOwnField = RED.util.getMessageProperty(msg,node.readOwn);
+                readOwnField = readOwnField === 'true';
             }else{
-                readOwnField = node.readOwn;
+                readOwnField = node.readOwn === 'true';
             }
             if(node.updateAnyType == "msg"){
                 updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
+                updateAnyField = updateAnyField === 'true';
             }else{
-                updateAnyField = node.updateAny;
+                updateAnyField = node.updateAny === 'true';
             }
             if(node.updateOwnType == "msg"){
                 updateOwnField = RED.util.getMessageProperty(msg,node.updateOwn);
+                updateOwnField = updateOwnField === 'true';
             }else{
-                updateOwnField = node.updateOwn;
+                updateOwnField = node.updateOwn === 'true';
             }
             if(node.deleteAnyType == "msg"){
                 deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
+                deleteAnyField = deleteAnyField === 'true';
             }else{
-                deleteAnyField = node.deleteAny;
+                deleteAnyField = node.deleteAny === 'true';
             }
             if(node.deleteOwnType == "msg"){
                 deleteOwnField = RED.util.getMessageProperty(msg,node.deleteOwn);
+                deleteOwnField = deleteOwnField === 'true';
             }else{
-                deleteOwnField = node.deleteOwn;
+                deleteOwnField = node.deleteOwn === 'true';
             }
 
             //check if there is an action selected
@@ -113,28 +134,29 @@ module.exports = function(RED) {
             var permissions = null;
             var proceed = true;
 
-            if (! (ac.getRoles()).includes(whoField)){
+            if ( (ac.getRoles()).includes(whoField) == false){
                 node.warn("The WHO role does not exist. Create it with the grant node before.");
                 return null;
             }
 
-            if (! (ac.getResources()).includes(whatField)){
+            if ( (ac.getResources()).includes(whatField) == false){
                 node.warn("The WHAT role does not exist. Create it with the grant node before.");
                 return null;
             }
 
-            if(createAnyField){
+            if(createAnyField == true){
                 permissions = ac.can(whoField).createAny(whatField);
 
                 //if permission is false, avoid all the following IFs
                 if(permissions.granted == false){
+                    node.warn("Non granted");
                     proceed = false;
                 //else save the attributes
                 }else{
                     msg.createAnyAttr = permissions.attributes;
                 }
             }
-            if(proceed && createOwnField){
+            if(proceed == true && createOwnField == true){
                 permissions = ac.can(whoField).createOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -143,7 +165,7 @@ module.exports = function(RED) {
                 }
             }
 
-            if(proceed && readAnyField){
+            if(proceed == true && readAnyField == true){
                 permissions = ac.can(whoField).readAny(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -151,7 +173,7 @@ module.exports = function(RED) {
                     msg.readAnyAttr = permissions.attributes;
                 }
             }
-            if(proceed && readOwnField){
+            if(proceed == true && readOwnField == true){
                 permissions = ac.can(whoField).readOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -160,7 +182,7 @@ module.exports = function(RED) {
                 }
             }
 
-            if(proceed && updateAnyField){
+            if(proceed == true && updateAnyField == true){
                 permissions = ac.can(whoField).updateAny(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -168,7 +190,7 @@ module.exports = function(RED) {
                     msg.updateAnyAttr = permissions.attributes;
                 }
             }
-            if(proceed && updateOwnField){
+            if(proceed == true && updateOwnField == true){
                 permissions = ac.can(whoField).updateOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -177,7 +199,7 @@ module.exports = function(RED) {
                 }
             }
 
-            if(proceed && deleteAnyField){
+            if(proceed == true && deleteAnyField == true){
                 permissions = ac.can(whoField).deleteAny(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -185,7 +207,7 @@ module.exports = function(RED) {
                     msg.deleteAnyAttr = permissions.attributes;
                 }
             }
-            if(proceed && deleteOwnField){
+            if(proceed == true && deleteOwnField == true){
                 permissions = ac.can(whoField).deleteOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -196,8 +218,8 @@ module.exports = function(RED) {
            
             //output
             msg.payload = proceed;
-            //msg.attributes = permissions.attributes; <-- magari salvarli in un altro campo di msg
 
+            
             node.send(msg);
         });
     }

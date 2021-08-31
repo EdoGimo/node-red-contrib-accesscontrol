@@ -56,46 +56,65 @@ module.exports = function(RED) {
                 return null;
             }
 
-            //get the actual value of CRUD actions
+            
+            var createAnyField;
+            var createOwnField;
+            var readAnyField;
+            var readOwnField;
+            var updateAnyField;
+            var updateOwnField;
+            var deleteAnyField;
+            var deleteOwnField;
+
+            //get the actual value of CRUD actions if is in msg + convert to boolean
             if(node.createAnyType == "msg"){
                 createAnyField = RED.util.getMessageProperty(msg,node.createAny);
+                createAnyField = createAnyField === 'true';
+            //import as a boolean from the node otherwise
             }else{
-                createAnyField = node.createAny;
+                createAnyField = node.createAny === 'true';
             }
             if(node.createOwnType == "msg"){
                 createOwnField = RED.util.getMessageProperty(msg,node.createOwn);
+                createOwnField = createOwnField === 'true';
             }else{
-                createOwnField = node.createOwn;
+                createOwnField = node.createOwn === 'true';
             }
             if(node.readAnyType == "msg"){
                 readAnyField = RED.util.getMessageProperty(msg,node.readAny);
+                readAnyField = readAnyField === 'true';
             }else{
-                readAnyField = node.readAny;
+                readAnyField = node.readAny === 'true';
             }
             if(node.readOwnType == "msg"){
                 readOwnField = RED.util.getMessageProperty(msg,node.readOwn);
+                readOwnField = readOwnField === 'true';
             }else{
-                readOwnField = node.readOwn;
+                readOwnField = node.readOwn === 'true';
             }
             if(node.updateAnyType == "msg"){
                 updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
+                updateAnyField = updateAnyField === 'true';
             }else{
-                updateAnyField = node.updateAny;
+                updateAnyField = node.updateAny === 'true';
             }
             if(node.updateOwnType == "msg"){
                 updateOwnField = RED.util.getMessageProperty(msg,node.updateOwn);
+                updateOwnField = updateOwnField === 'true';
             }else{
-                updateOwnField = node.updateOwn;
+                updateOwnField = node.updateOwn === 'true';
             }
             if(node.deleteAnyType == "msg"){
                 deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
+                deleteAnyField = deleteAnyField === 'true';
             }else{
-                deleteAnyField = node.deleteAny;
+                deleteAnyField = node.deleteAny === 'true';
             }
             if(node.deleteOwnType == "msg"){
                 deleteOwnField = RED.util.getMessageProperty(msg,node.deleteOwn);
+                deleteOwnField = deleteOwnField === 'true';
             }else{
-                deleteOwnField = node.deleteOwn;
+                deleteOwnField = node.deleteOwn === 'true';
             }
 
             //check if there is an action selected
