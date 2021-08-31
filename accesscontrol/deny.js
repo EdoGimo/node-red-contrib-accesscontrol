@@ -38,6 +38,9 @@ module.exports = function(RED) {
         var node = this;
         node.on('input', function(msg) {
 
+            var whoField;
+            var whatField;
+
             //get the actual value of WHO and WHAT if msg was selected
             if(node.whoType == "msg"){
                 whoField = RED.util.getMessageProperty(msg,node.who);
