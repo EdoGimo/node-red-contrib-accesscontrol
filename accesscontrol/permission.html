@@ -75,7 +75,7 @@
 <script type="text/html" data-help-name="permission">
     <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
     <h4>Permission node</h4>
-    <p>This node, receiving a message in input, checks if a specified role has certain permissions to access an object.</p>
+    <p>This node, receiving a message in input, checks if a specified role has a certain permission to access an object. For more permissions at once, use the <b>permissions</b> node</p>
     <p>The attributes that can be set are:</p>
     <ul>
     <li>WHO: the role;</li>
@@ -84,5 +84,5 @@
     <li>WHAT: the object to be accessed by the role.</li>
     </ul>
     <p>The node returns in the payload the result (true/false) and in msg.attributes the potential attributes that can be set.</p>
-    <p><b>Note:</b> WHO and WHAT values can also be specified using the msg attributes: to get the content of "msg.role" write only "role" after changing the type.</p>
+    <p><b>Note:</b> WHO and WHAT values can also be specified using the msg attributes: e.g., to get the content of "msg.role" write only "role" after changing the type.</p>
 </script>

@@ -149,6 +149,17 @@ module.exports = function(RED) {
 
             //deny permissions
             const ac = flowContext.get("accesscontrol");
+
+            if ( (ac.getRoles()).includes(whoField) == false){
+                node.warn("The WHO role does not exist. Can't deny permissions to a non-existing role!");
+                return null;
+            }
+
+            if ( (ac.getResources()).includes(whatField) == false){
+                node.warn("The WHAT role does not exist. Can't deny permissions to a non-existing resource!");
+                return null;
+            }
+            
             //IF both the Any and Own are selected, Any is enough
             
             //=== CREATE ===

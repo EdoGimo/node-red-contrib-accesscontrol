@@ -51,7 +51,7 @@ module.exports = function(RED) {
                 return null;
             }
 
-            //EXTEND
+            //extend role
             ac.grant(whoField).extend(whatField);
            
 
