@@ -3,9 +3,9 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
 
         //options
-        this.who = config.who;
+        this.who = config.who;  //Beneficiary
         this.whoType = config.whoType;
-        this.what = config.what;
+        this.what = config.what;    //Inherit from
         this.whatType = config.whatType;
 
         
@@ -37,15 +37,21 @@ module.exports = function(RED) {
                 return null;
             }
 
+            //check if WHO and WHAT are the same role (a role cannot be extended by itself)
+            if(whoField == whatField){
+                node.warn("Can't extend a role with itself!");
+                return null;
+            }
+
             const ac = flowContext.get("accesscontrol");
 
+            //check if WHAT exists (a role cannot be extended by a non-existent role)
             if (! (ac.getRoles()).includes(whatField)){
                 node.warn("The 'Inherit from' role does not exist. Create it with the grant node before.");
                 return null;
             }
 
-            //TODO TRY-CATCH for inheriting errors
-
+            //EXTEND
             ac.grant(whoField).extend(whatField);
            
 
