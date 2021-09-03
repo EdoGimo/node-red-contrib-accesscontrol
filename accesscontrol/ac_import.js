@@ -3,6 +3,8 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
 
         //options
+        this.mongo = config.mongo;
+        this.mongoType; config.mongoType;
         
         //context selection (change ".flow" to ".global" for global context)
         var flowContext = this.context().flow;
@@ -11,12 +13,35 @@ module.exports = function(RED) {
         var node = this;
         node.on('input', function(msg) {
 
+            var db = msg.payload;
+            var mongoField;
+
+            //get the actual value of _id if msg was selected
+            if(node.mongoType == "msg"){
+                mongoField = RED.util.getMessageProperty(msg,node.mongo);
+            }else{
+                mongoField = node.mongo;
+            }
+
             const ac = flowContext.get("accesscontrol");
 
             //catch AccessControlError
             try {
+
+                if(mongoField){
+                    var index = db.findIndex(x => x._id === mongoField);
+
+                    if(index == -1){
+                        node.warn("Cannot find the specified id in MongoDB.");
+                        return null;
+                    }
+
+                    delete db[index]._id;
+                    db = db[index];
+                }
+
                 //read grants from payload (string)
-                ac.setGrants(msg.payload);
+                ac.setGrants(db);
                 node.warn("Permissions successfully imported.");
 
                 //clear msg
@@ -24,8 +49,13 @@ module.exports = function(RED) {
 
                 node.send(msg);
             }
-            catch(err) {
-                node.warn("Import node failed. Check formatting of the payload string.");
+            catch(error) {
+                if (error instanceof TypeError){
+                    node.warn("Missing payload or value not an AccessControl compatible JSON.");
+                    return null;
+                } else{
+                    throw error;
+                }
             }
         });
     }

@@ -1,7 +1,7 @@
 {
 	"name": "node-red-contrib-accesscontrol",
-	"version": "0.1.2",
-	"description": "Node-RED wrapper for the accesscontrol npm module",
+	"version": "0.2.1",
+	"description": "Node-RED wrapper for the accesscontrol npm module.",
     "dependencies": {
 		"accesscontrol":"2.2.1"
 	},
@@ -9,7 +9,7 @@
 		"type": "git",
 		"url": "https://github.com/edogimo/node-red-contrib-accesscontrol.git"
 	  },
-	"keywords": ["node-red", "accesscontrol", "access", "control", "RBAC", "ABAC"],
+	"keywords": ["node-red", "accesscontrol", "access", "control", "RBAC", "ABAC", "permissions", "mongodb"],
 	"node-red": {
 		"nodes": {
 			"ACSet":"accesscontrol/ac_set.js",
