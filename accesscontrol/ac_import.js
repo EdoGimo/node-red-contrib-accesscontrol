@@ -32,7 +32,7 @@ module.exports = function(RED) {
                     var index = db.findIndex(x => x._id === mongoField);
 
                     if(index == -1){
-                        node.warn("Cannot find the specified id in MongoDB.");
+                        node.warn("Cannot find the specified MongoDB '_id' in the JSON.");
                         return null;
                     }
 

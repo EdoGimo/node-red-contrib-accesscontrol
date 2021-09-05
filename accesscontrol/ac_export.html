@@ -49,5 +49,5 @@
     <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
     <h4>AC export node</h4>
     <p>This node exports, as a "msg.payload" string, the permissions that were set.</p>
-    <p>Additionally, exporting to MongoDB is simplified by providing the '_id' value, which identifies the document.</p>
+    <p>Additionally, exporting to MongoDB is simplified by providing the '_id' value, which is included into the JSON to identify the document (otherwise a random id is generated and the document cannot be as easily retrieved).</p>
 </script>
