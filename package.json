@@ -1,6 +1,6 @@
 {
 	"name": "node-red-contrib-accesscontrol",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"description": "Node-RED wrapper for the accesscontrol npm module.",
     "dependencies": {
 		"accesscontrol":"2.2.1"
@@ -19,7 +19,8 @@
 			"Permissions":"accesscontrol/permissions.js",
 			"Grant":"accesscontrol/grant.js",
 			"Deny":"accesscontrol/deny.js",
-			"Extend":"accesscontrol/extend.js"
+			"Extend":"accesscontrol/extend.js",
+			"Remove":"accesscontrol/remove.js"
 		}
 	}
 }

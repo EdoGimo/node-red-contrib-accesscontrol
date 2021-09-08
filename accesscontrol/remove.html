@@ -1,0 +1,76 @@
+<script type="text/javascript">
+    RED.nodes.registerType('remove',{
+        category: 'access control',
+        color: '#ca9758',
+        defaults: {
+            name: {value:""},
+            who: {value:"", validate: RED.validators.typedInput("whoType")},
+            whoType: { value:"str"},
+            what: {value:"", validate: RED.validators.typedInput("whatType")},
+            whatType: { value:"str"},
+            force: {value:false}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-shield",
+        label: function() {
+            return this.name||"remove";
+        },
+        oneditprepare: function() {
+            $("#node-input-who").typedInput({
+                default: this.whoType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-whoType")
+            });
+            
+            $("#node-input-what").typedInput({
+                default: this.whatType || "str",
+                types:["str", "msg"],
+                typeField: $("#node-input-whatType")
+            });
+        },
+        onsave: function(){
+            this.whoType = $("#node-input-whoType").val();
+            this.whatType = $("#node-input-whatType").val();
+        }
+    });
+</script>
+
+
+<script type="text/html" data-template-name="remove">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <p>Check the "Help" tab for more information on the parameters.</p>
+
+    <hr>
+    <p>Insert only role(s) or resource(s), not both.</p>
+
+    <div class="form-row">
+        <label for="node-input-who"><i class="fa fa-user-circle"></i> Role</label>
+        <input type="text" id="node-input-who" placeholder="Role, comma-separate for list">
+        <input type="hidden" id="node-input-whoType">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-what"><i class="fa fa-object-group"></i> Resource</label>
+        <input type="text" id="node-input-what" placeholder="Resource, comma-separate for list">
+        <input type="hidden" id="node-input-whatType">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-force">&nbsp;</label>            
+        <input type="checkbox" id="node-input-force" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-force" style="width: auto"><i class="fa fa-forward"></i> Force removal in case of errors with arrays.</label>
+    </div>
+    &nbsp;
+    
+</script>
+
+<script type="text/html" data-help-name="remove">
+    <p>Details on module logic at: <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
+    <h4>Remove node</h4>
+    <p>This node removes a role or resource from Access Control. To remove more roles or resources at once, provide an array via msg or comma-separate all the values in the string input.</p>
+    <p>Check the force box to remove roles or resources even when one of the values provided in the array does not exist (it usually stops in that case).</p>
+</script>

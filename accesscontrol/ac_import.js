@@ -4,7 +4,7 @@ module.exports = function(RED) {
 
         //options
         this.mongo = config.mongo;
-        this.mongoType; config.mongoType;
+        this.mongoType = config.mongoType;
         
         //context selection (change ".flow" to ".global" for global context)
         var flowContext = this.context().flow;
@@ -15,6 +15,7 @@ module.exports = function(RED) {
 
             var db = msg.payload;
             var mongoField;
+            
 
             //get the actual value of _id if msg was selected
             if(node.mongoType == "msg"){
