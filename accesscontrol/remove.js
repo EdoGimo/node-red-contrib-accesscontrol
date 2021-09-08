@@ -63,7 +63,7 @@ module.exports = function(RED) {
             }
 
             const ac = flowContext.get("accesscontrol");
-            var err = false;
+            var missing = new Array();
 
             //IF role is selected
             if(whoField){
@@ -74,19 +74,25 @@ module.exports = function(RED) {
                         //check if the values are present
                         if(!ac.hasRole(element)){
                             node.warn("Role " + element+ " not found.");
-                            err = true;
+                            missing.push(element);
                         }
                     });
 
-                    //if there was an error and force was not set, do not proceed with the removal
-                    if(err == true && !node.force){
+                    //if there was a missing fole and force was not set, do not proceed with the removal
+                    if(missing.length > 0 && !node.force){
                         return null;
-                    } else {
-                        try{
+
+                    } else if (missing.length > 0){
+                        whoField = whoField.filter( ( el ) => !missing.includes( el ) );    
+                        
+                        if(whoField.length > 0){
                             ac.removeRoles(whoField);
-                        } catch (e){
-                            
+                        } else {
+                            node.warn("Nothing to remove.")
                         }
+
+                    } else {
+                        ac.removeRoles(whoField);
                     }
 
                 } else {
@@ -111,13 +117,23 @@ module.exports = function(RED) {
                         //check if the values are present
                         if(!ac.hasResource(element)){
                             node.warn("Resource " + element + " not found.");
-                            err = true;
+                            missing.push(element);
                         }
                     });
 
-                    //if there was an error and force was not set, do not proceed with the removal
-                    if(err == true && !node.force){
+                    //if there was a missing resource and force was not set, do not proceed with the removal
+                    if(missing.length > 0 && !node.force){
                         return null;
+
+                    } else if (missing.length > 0){
+                        whatField = whatField.filter( ( el ) => !missing.includes( el ) );
+
+                        if(whatField.length > 0){
+                            ac.removeResources(whatField);
+                        } else {
+                            node.warn("Nothing to remove.")
+                        }
+
                     } else {
                         ac.removeResources(whatField);
                     }
