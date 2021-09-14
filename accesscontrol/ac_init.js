@@ -1,5 +1,5 @@
 module.exports = function(RED) {
-    function ACSetNode(config) {
+    function ACInitNode(config) {
         RED.nodes.createNode(this,config);
         
         //options
@@ -27,5 +27,5 @@ module.exports = function(RED) {
             //node.send(msg);
         });
     }
-    RED.nodes.registerType("AC init", ACSetNode);
+    RED.nodes.registerType("AC init", ACInitNode);
 }
