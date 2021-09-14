@@ -20,16 +20,22 @@ module.exports = function(RED) {
         this.readAnyType = config.readAnyType;
         this.readOwn = config.readOwn;
         this.readOwnType = config.readOwnType;
+        this.read = config.read;
+        this.readType = config.readType;
         //U
         this.updateAny = config.updateAny;
         this.updateAnyType = config.updateAnyType;
         this.updateOwn = config.updateOwn;
         this.updateOwnType = config.updateOwnType;
+        this.update = config.update;
+        this.updateType = config.updateType;
         //D
         this.deleteAny = config.deleteAny;
         this.deleteAnyType = config.deleteAnyType;
         this.deleteOwn = config.deleteOwn;
         this.deleteOwnType = config.deleteOwnType;
+        this.delete = config.delete;
+        this.deleteType = config.deleteType;
 
         //context selection (change ".flow" to ".global" for global context)
         var flowContext = this.context().flow;
@@ -66,12 +72,15 @@ module.exports = function(RED) {
 
             var readAnyField;
             var readOwnField;
+            var readAttrField
 
             var updateAnyField;
             var updateOwnField;
+            var updateAttrField
 
             var deleteAnyField;
             var deleteOwnField;
+            var deleteAttrField
 
             //get the actual value of CRUD actions if is in msg + convert to boolean
             if(node.createAnyType == "msg"){
@@ -114,6 +123,11 @@ module.exports = function(RED) {
             }else{
                 readOwnField = node.readOwn === 'true';
             }
+            if(node.readType == "msg"){
+                readAttrField = RED.util.getMessageProperty(msg,node.read);
+            }else{
+                readAttrField = node.read;
+            }
 
 
             if(node.updateAnyType == "msg"){
@@ -131,6 +145,11 @@ module.exports = function(RED) {
                 }
             }else{
                 updateOwnField = node.updateOwn === 'true';
+            }
+            if(node.updateType == "msg"){
+                updateAttrField = RED.util.getMessageProperty(msg,node.udpate);
+            }else{
+                updateAttrField = node.update;
             }
 
 
@@ -150,6 +169,12 @@ module.exports = function(RED) {
             }else{
                 deleteOwnField = node.deleteOwn === 'true';
             }
+            if(node.deleteType == "msg"){
+                deleteAttrField = RED.util.getMessageProperty(msg,node.delete);
+            }else{
+                deleteAttrField = node.delete;
+            }
+            
 
             //check if there is an action selected
             if (!createAnyField && !createOwnField && 
@@ -187,8 +212,7 @@ module.exports = function(RED) {
                 //else save the attributes
                 }else{
                     //if the attributes are specified
-                    node.warn("Attr: " + createAttrField);
-                    if(createAttrField && createAttrField != ""){    //TODO ha senso?
+                    if(createAttrField && createAttrField != ""){
                         proceed = checker(createAttrField, permissions.attributes);
                     }
                     //msg.createAnyAttr = permissions.attributes;
@@ -200,8 +224,7 @@ module.exports = function(RED) {
                     proceed = false;
                 }else{
                     //if the attributes are specified
-                    node.warn("Attr: " + createAttrField);
-                    if(createAttrField && createAttrField != ""){    //TODO ha senso?
+                    if(createAttrField && createAttrField != ""){
                         proceed = checker(createAttrField, permissions.attributes);
                     }
                     //msg.createOwnAttr = permissions.attributes;
@@ -213,14 +236,22 @@ module.exports = function(RED) {
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
-                    msg.readAnyAttr = permissions.attributes;
+                    //if the attributes are specified
+                    if(readAttrField && readAttrField != ""){
+                        proceed = checker(readAttrField, permissions.attributes);
+                    }
+                    //msg.readAnyAttr = permissions.attributes;
                 }
             }else if(proceed == true && readOwnField == true){
                 permissions = ac.can(whoField).readOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
-                    msg.readOwnAttr = permissions.attributes;
+                    //if the attributes are specified
+                    if(readAttrField && readAttrField != ""){
+                        proceed = checker(readAttrField, permissions.attributes);
+                    }
+                    //msg.readOwnAttr = permissions.attributes;
                 }
             }
 
@@ -229,14 +260,22 @@ module.exports = function(RED) {
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
-                    msg.updateAnyAttr = permissions.attributes;
+                    //if the attributes are specified
+                    if(updateAttrField && updateAttrField != ""){
+                        proceed = checker(updateAttrField, permissions.attributes);
+                    }
+                    //msg.updateAnyAttr = permissions.attributes;
                 }
             }else if(proceed == true && updateOwnField == true){
                 permissions = ac.can(whoField).updateOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
-                    msg.updateOwnAttr = permissions.attributes;
+                    //if the attributes are specified
+                    if(updateAttrField && updateAttrField != ""){
+                        proceed = checker(updateAttrField, permissions.attributes);
+                    }
+                    //msg.updateOwnAttr = permissions.attributes;
                 }
             }
 
@@ -245,14 +284,22 @@ module.exports = function(RED) {
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
-                    msg.deleteAnyAttr = permissions.attributes;
+                    //if the attributes are specified
+                    if(deleteAttrField && deleteAttrField != ""){
+                        proceed = checker(deleteAttrField, permissions.attributes);
+                    }
+                    //msg.deleteAnyAttr = permissions.attributes;
                 }
             }else if(proceed == true && deleteOwnField == true){
                 permissions = ac.can(whoField).deleteOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
-                    msg.deleteOwnAttr = permissions.attributes;
+                    //if the attributes are specified
+                    if(deleteAttrField && deleteAttrField != ""){
+                        proceed = checker(deleteAttrField, permissions.attributes);
+                    }
+                    //msg.deleteOwnAttr = permissions.attributes;
                 }
             }
            
