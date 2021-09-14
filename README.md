@@ -1,6 +1,9 @@
 # node-red-contrib-accesscontrol
 
-A [Node-RED](https://nodered.org/) implementation of the [accesscontrol](https://www.npmjs.com/package/accesscontrol) nmp module, offering Role Based and Attributed Based Access Control. Now supporting export/import to/from the [MongoDB node](https://flows.nodered.org/node/node-red-node-mongodb).
+This node is still NOT complete. Errors and wrong behaviour are to be expected.
+
+A [Node-RED](https://nodered.org/) implementation of the [accesscontrol](https://www.npmjs.com/package/accesscontrol) nmp module, providing Role Based Access Control with the addition of Attributes (see this [Nist paper](https://csrc.nist.gov/publications/detail/journal-article/2010/adding-attributes-to-role-based-access-control)). 
+Now supporting export/import to/from the [MongoDB node](https://flows.nodered.org/node/node-red-node-mongodb).
 
 
 ### Prerequisites

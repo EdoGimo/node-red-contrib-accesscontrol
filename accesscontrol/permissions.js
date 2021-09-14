@@ -13,6 +13,8 @@ module.exports = function(RED) {
         this.createAnyType = config.createAnyType;
         this.createOwn = config.createOwn;
         this.createOwnType = config.createOwnType;
+        this.create = config.create;
+        this.createType = config.createType;
         //R
         this.readAny = config.readAny;
         this.readAnyType = config.readAnyType;
@@ -60,10 +62,14 @@ module.exports = function(RED) {
 
             var createAnyField;
             var createOwnField;
+            var createAttrField
+
             var readAnyField;
             var readOwnField;
+
             var updateAnyField;
             var updateOwnField;
+
             var deleteAnyField;
             var deleteOwnField;
 
@@ -85,6 +91,13 @@ module.exports = function(RED) {
             }else{
                 createOwnField = node.createOwn === 'true';
             }
+            if(node.createType == "msg"){
+                createAttrField = RED.util.getMessageProperty(msg,node.create);
+            }else{
+                createAttrField = node.create;
+            }
+
+            
             if(node.readAnyType == "msg"){
                 readAnyField = RED.util.getMessageProperty(msg,node.readAny);
                 if (typeof(readAnyField) == "string"){
@@ -101,6 +114,8 @@ module.exports = function(RED) {
             }else{
                 readOwnField = node.readOwn === 'true';
             }
+
+
             if(node.updateAnyType == "msg"){
                 updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
                 if (typeof(updateAnyField) == "string"){
@@ -117,6 +132,8 @@ module.exports = function(RED) {
             }else{
                 updateOwnField = node.updateOwn === 'true';
             }
+
+
             if(node.deleteAnyType == "msg"){
                 deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
                 if (typeof(deleteAnyField) == "string"){
@@ -149,6 +166,7 @@ module.exports = function(RED) {
 
             var permissions = null;
             var proceed = true;
+            let checker = (arr, target) => target.every(v => arr.includes(v));
 
             if ( (ac.getRoles()).includes(whoField) == false){
                 node.warn("The WHO role does not exist. Create it with the grant node before.");
@@ -168,15 +186,25 @@ module.exports = function(RED) {
                     proceed = false;
                 //else save the attributes
                 }else{
-                    msg.createAnyAttr = permissions.attributes;
+                    //if the attributes are specified
+                    node.warn("Attr: " + createAttrField);
+                    if(createAttrField && createAttrField != ""){    //TODO ha senso?
+                        proceed = checker(createAttrField, permissions.attributes);
+                    }
+                    //msg.createAnyAttr = permissions.attributes;
                 }
-            }
-            if(proceed == true && createOwnField == true){
+            //TODO messo else con IF dopo perchè se è ANY freg di OWN
+            } else if(createOwnField == true){
                 permissions = ac.can(whoField).createOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
                 }else{
-                    msg.createOwnAttr = permissions.attributes;
+                    //if the attributes are specified
+                    node.warn("Attr: " + createAttrField);
+                    if(createAttrField && createAttrField != ""){    //TODO ha senso?
+                        proceed = checker(createAttrField, permissions.attributes);
+                    }
+                    //msg.createOwnAttr = permissions.attributes;
                 }
             }
 
@@ -187,8 +215,7 @@ module.exports = function(RED) {
                 }else{
                     msg.readAnyAttr = permissions.attributes;
                 }
-            }
-            if(proceed == true && readOwnField == true){
+            }else if(proceed == true && readOwnField == true){
                 permissions = ac.can(whoField).readOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -204,8 +231,7 @@ module.exports = function(RED) {
                 }else{
                     msg.updateAnyAttr = permissions.attributes;
                 }
-            }
-            if(proceed == true && updateOwnField == true){
+            }else if(proceed == true && updateOwnField == true){
                 permissions = ac.can(whoField).updateOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;
@@ -221,8 +247,7 @@ module.exports = function(RED) {
                 }else{
                     msg.deleteAnyAttr = permissions.attributes;
                 }
-            }
-            if(proceed == true && deleteOwnField == true){
+            }else if(proceed == true && deleteOwnField == true){
                 permissions = ac.can(whoField).deleteOwn(whatField);
                 if(permissions.granted == false){
                     proceed = false;

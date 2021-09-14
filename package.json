@@ -1,6 +1,6 @@
 {
 	"name": "node-red-contrib-accesscontrol",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"description": "Node-RED wrapper for the accesscontrol npm module.",
     "dependencies": {
 		"accesscontrol":"2.2.1"
@@ -12,7 +12,7 @@
 	"keywords": ["node-red", "accesscontrol", "access", "control", "RBAC", "ABAC", "permissions", "mongodb"],
 	"node-red": {
 		"nodes": {
-			"ACSet":"accesscontrol/ac_set.js",
+			"ACInit":"accesscontrol/ac_init.js",
 			"ACExport":"accesscontrol/ac_export.js",
 			"ACImport":"accesscontrol/ac_import.js",
 			"Permission":"accesscontrol/permission.js",
