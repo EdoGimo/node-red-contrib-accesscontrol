@@ -280,14 +280,14 @@
 </script>
 
 <script type="text/html" data-help-name="permissions">
-    <p>This node, receiving a message in input, checks if a specified role has certain permissionss to access an object. Similar to permission, but supports "msg" for the CRUD fields, the evaluation of multiple permissions concurrently and the attributes.</p>
+    <p>This node, receiving a message in input, checks if a specified role has certain permissionss to access an object. Similar to permission, but supports "msg" for the CRUD fields, the evaluation of multiple permissions concurrently and takes into account CRUD attributes.</p>
     <p>The attributes that can be set are:</p>
     <ul>
     <li>WHO: the role;</li>
-    <li>CRUD ANY/OWN: a boolean for each CRUD (Create, Read, Update, Delete) action, in both the ANY and OWN variants, plus the potential attributes;</li>
+    <li>CRUD ANY/OWN: a boolean for each CRUD (Create, Read, Update, Delete) action, in both the ANY and OWN variants, plus the potential CRUD attributes;</li>
     <li>WHAT: the object to be accessed by the role.</li>
     </ul>
-    <p>The node returns in the payload the result (true/false) and in msg.attributes the potential attributes that can be set.</p>
+    <p>The node returns in the payload the result (true/false).</p>
     <p><b>Note:</b> All values can also be specified using the msg attributes: e.g., to get the content of "msg.role" write only "role" after changing the type.</p>
     <h4>AccessControl module's logic</h4>
     <p>Details on module logic at <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>

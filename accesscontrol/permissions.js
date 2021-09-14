@@ -68,19 +68,19 @@ module.exports = function(RED) {
 
             var createAnyField;
             var createOwnField;
-            var createAttrField
+            var createAttrField;
 
             var readAnyField;
             var readOwnField;
-            var readAttrField
+            var readAttrField;
 
             var updateAnyField;
             var updateOwnField;
-            var updateAttrField
+            var updateAttrField;
 
             var deleteAnyField;
             var deleteOwnField;
-            var deleteAttrField
+            var deleteAttrField;
 
             //get the actual value of CRUD actions if is in msg + convert to boolean
             if(node.createAnyType == "msg"){
@@ -102,8 +102,9 @@ module.exports = function(RED) {
             }
             if(node.createType == "msg"){
                 createAttrField = RED.util.getMessageProperty(msg,node.create);
-            }else{
-                createAttrField = node.create;
+            }else if(node.create){
+                //import as array if it is specified
+                createAttrField = (node.create).split(",").map(item=>item.trim());
             }
 
             
@@ -125,8 +126,8 @@ module.exports = function(RED) {
             }
             if(node.readType == "msg"){
                 readAttrField = RED.util.getMessageProperty(msg,node.read);
-            }else{
-                readAttrField = node.read;
+            }else if(node.read){
+                readAttrField = (node.read).split(",").map(item=>item.trim());
             }
 
 
@@ -147,9 +148,9 @@ module.exports = function(RED) {
                 updateOwnField = node.updateOwn === 'true';
             }
             if(node.updateType == "msg"){
-                updateAttrField = RED.util.getMessageProperty(msg,node.udpate);
-            }else{
-                updateAttrField = node.update;
+                updateAttrField = RED.util.getMessageProperty(msg,node.update);
+            }else if(node.update){
+                updateAttrField = (node.update).split(",").map(item=>item.trim());
             }
 
 
@@ -171,8 +172,8 @@ module.exports = function(RED) {
             }
             if(node.deleteType == "msg"){
                 deleteAttrField = RED.util.getMessageProperty(msg,node.delete);
-            }else{
-                deleteAttrField = node.delete;
+            }else if(node.delete){
+                deleteAttrField = (node.delete).split(",").map(item=>item.trim());
             }
             
 
@@ -188,11 +189,11 @@ module.exports = function(RED) {
 
 
             const ac = flowContext.get("accesscontrol");
-
             var permissions = null;
             var proceed = true;
-            let checker = (arr, target) => target.every(v => arr.includes(v));
 
+
+            //check if role and resource exist
             if ( (ac.getRoles()).includes(whoField) == false){
                 node.warn("The WHO role does not exist. Create it with the grant node before.");
                 return null;
@@ -203,104 +204,50 @@ module.exports = function(RED) {
                 return null;
             }
 
+
+            //control if permissions are correct for ANY
             if(createAnyField == true){
                 permissions = ac.can(whoField).createAny(whatField);
 
-                //if permission is false, avoid all the following IFs
-                if(permissions.granted == false){
-                    proceed = false;
-                //else save the attributes
-                }else{
-                    //if the attributes are specified
-                    if(createAttrField && createAttrField != ""){
-                        proceed = checker(createAttrField, permissions.attributes);
-                    }
-                    //msg.createAnyAttr = permissions.attributes;
-                }
-            //TODO messo else con IF dopo perchè se è ANY freg di OWN
+                proceed = proceedCheck(permissions, createAttrField);
+                
+            //control if permissions are correct for OWN
             } else if(createOwnField == true){
                 permissions = ac.can(whoField).createOwn(whatField);
-                if(permissions.granted == false){
-                    proceed = false;
-                }else{
-                    //if the attributes are specified
-                    if(createAttrField && createAttrField != ""){
-                        proceed = checker(createAttrField, permissions.attributes);
-                    }
-                    //msg.createOwnAttr = permissions.attributes;
-                }
+
+                proceed = proceedCheck(permissions, createAttrField)
             }
 
             if(proceed == true && readAnyField == true){
                 permissions = ac.can(whoField).readAny(whatField);
-                if(permissions.granted == false){
-                    proceed = false;
-                }else{
-                    //if the attributes are specified
-                    if(readAttrField && readAttrField != ""){
-                        proceed = checker(readAttrField, permissions.attributes);
-                    }
-                    //msg.readAnyAttr = permissions.attributes;
-                }
+                
+                proceed = proceedCheck(permissions, readAttrField);
+
             }else if(proceed == true && readOwnField == true){
-                permissions = ac.can(whoField).readOwn(whatField);
-                if(permissions.granted == false){
-                    proceed = false;
-                }else{
-                    //if the attributes are specified
-                    if(readAttrField && readAttrField != ""){
-                        proceed = checker(readAttrField, permissions.attributes);
-                    }
-                    //msg.readOwnAttr = permissions.attributes;
-                }
+                
+                proceed = proceedCheck(permissions, readAttrField);
             }
 
             if(proceed == true && updateAnyField == true){
                 permissions = ac.can(whoField).updateAny(whatField);
-                if(permissions.granted == false){
-                    proceed = false;
-                }else{
-                    //if the attributes are specified
-                    if(updateAttrField && updateAttrField != ""){
-                        proceed = checker(updateAttrField, permissions.attributes);
-                    }
-                    //msg.updateAnyAttr = permissions.attributes;
-                }
+                
+                proceed = proceedCheck(permissions, updateAttrField);
+                
             }else if(proceed == true && updateOwnField == true){
                 permissions = ac.can(whoField).updateOwn(whatField);
-                if(permissions.granted == false){
-                    proceed = false;
-                }else{
-                    //if the attributes are specified
-                    if(updateAttrField && updateAttrField != ""){
-                        proceed = checker(updateAttrField, permissions.attributes);
-                    }
-                    //msg.updateOwnAttr = permissions.attributes;
-                }
+                
+                proceed = proceedCheck(permissions, updateAttrField);
             }
 
             if(proceed == true && deleteAnyField == true){
                 permissions = ac.can(whoField).deleteAny(whatField);
-                if(permissions.granted == false){
-                    proceed = false;
-                }else{
-                    //if the attributes are specified
-                    if(deleteAttrField && deleteAttrField != ""){
-                        proceed = checker(deleteAttrField, permissions.attributes);
-                    }
-                    //msg.deleteAnyAttr = permissions.attributes;
-                }
+                
+                proceed = proceedCheck(permissions, deleteAttrField);
+
             }else if(proceed == true && deleteOwnField == true){
                 permissions = ac.can(whoField).deleteOwn(whatField);
-                if(permissions.granted == false){
-                    proceed = false;
-                }else{
-                    //if the attributes are specified
-                    if(deleteAttrField && deleteAttrField != ""){
-                        proceed = checker(deleteAttrField, permissions.attributes);
-                    }
-                    //msg.deleteOwnAttr = permissions.attributes;
-                }
+
+                proceed = proceedCheck(permissions, deleteAttrField);
             }
            
             //output
@@ -309,6 +256,37 @@ module.exports = function(RED) {
             
             node.send(msg);
         });
+
+
+        
+        function proceedCheck(permissions, attrField){
+            //check if target is contained in arr
+            let checker = (arr, target) => target.every(v => arr.includes(v));
+    
+            //if permission is false, avoid all the following IFs
+            if(permissions.granted == false){
+                return false;
+            
+            //if permission is true and attributes are specified, run additional checks
+            }else if(attrField){
+                var attr = permissions.attributes;
+    
+                //if both are arrays (attr is always returned as such)
+                if(Array.isArray(attrField)){
+                    return checker(attr, attrField);
+    
+                //if they are not arrays
+                } else{
+                    node.warn("An 'attribute' value passed via msg is not an array!");
+                    return false;
+                }
+    
+            //if permission is true and attributes are NOT specified, go on
+            }else{
+                return true;
+            }
+        }
     }
+
     RED.nodes.registerType("permissions", PermissionsNode);
 }
