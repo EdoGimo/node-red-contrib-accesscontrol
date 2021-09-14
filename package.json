@@ -1,6 +1,6 @@
 {
 	"name": "node-red-contrib-accesscontrol",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"description": "Node-RED wrapper for the accesscontrol npm module.",
     "dependencies": {
 		"accesscontrol":"2.2.1"

@@ -224,6 +224,7 @@ module.exports = function(RED) {
                 proceed = proceedCheck(permissions, readAttrField);
 
             }else if(proceed == true && readOwnField == true){
+                permissions = ac.can(whoField).readOwn(whatField);
                 
                 proceed = proceedCheck(permissions, readAttrField);
             }
