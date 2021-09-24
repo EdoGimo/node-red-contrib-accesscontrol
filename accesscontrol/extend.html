@@ -62,6 +62,9 @@
 
 <script type="text/html" data-help-name="extend">
     <p>This node, receiving a message in input, grants to a certain role the permissions of another role.</p>
+    <p>Permissions are not added directly to the new role, but a reference to the other role is added. This means that if the original role (A) is removed or any permission is denied, the beneficiary role (B) loses all the permissions or those denied. However, if a permission that was inherited is deniend only from B, permission nodes will return that B has not lost that permission, as the reference to A still exists.</p>
+    <p>Use the extend node with this concept in mind.</p>
+    <hr>
     <p>The attributes that can be set are:</p>
     <ul>
         <li>BENEFICIARY: the role (even not existing) that will receive the permissions;</li>
@@ -74,6 +77,6 @@
             <li>Cross-inheritance is not allowed.</li>
             <li>A role cannot (pre)extend a non-existing role. In other words, you should first create the base role.</li>
         </ul>
-        <h4>AccessControl module's logic</h4>
-        <p>Details on module logic at <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
+    <h4>AccessControl module's logic</h4>
+    <p>Details on module logic at <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
 </script>
