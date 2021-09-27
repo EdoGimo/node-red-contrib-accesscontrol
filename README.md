@@ -30,7 +30,7 @@ If necessary, restart Node-RED.
 
 
 ## How to use
-There are (at the moment) 9 nodes:
+10 nodes are provided:
 - **AC init**: creates the AccessControl instance that contains all permissions (as no database is used). It should be called just once for each execution, although the instance is not overwritten without explicitly specifying it checking the related option;
 
 - **AC export**: export the AccessControl permissions as a string (JSON format);
@@ -47,7 +47,9 @@ There are (at the moment) 9 nodes:
 
 - **permission**: checks if specific permissions are implemented or not;
 
-- **permissions**: checks if multiple permissions are implemented or not.
+- **permissions**: checks if multiple permissions are implemented or not;
+
+- **AC lock**: freezes the AccessControl instance. Attempts to modify it after calling this node will fail and will be reported.
 
 Detailed information about each node can be read in the help tab of Node-RED.
 
@@ -102,11 +104,14 @@ In case of more roles, a role of higher hierarchy has at least the permissions o
 To remove the newly added role, the **remove** node can be used: it simply removes all the occurrences of either a role or a resource (or even more of them by providing a list) from the accesscontrol instance.
 ![Remove](figures/remove.png)
 
-Finally, the **export** and **import** nodes. They do exactly what they are called, while also offering the support for MongoDB. After adding and removing again some permissions to offer a more diverse example of how these are exported, the node returns the JSON string that can be seen in the next figure.
+Finally, the **AC export** and **AC import** nodes. They do exactly what they are called, while also offering the support for MongoDB. After adding and removing again some permissions to offer a more diverse example of how these are exported, the node returns the JSON string that can be seen in the next figure.
 ![Export](figures/export.png)
 
-After forcing re-initialization of accesscontrol and copying this JSON into the payload of an inject that triggers the **import** node, two **permissions** nodes return true when checking both *user* and *mod* for the previously listed permissions.
+After forcing re-initialization of accesscontrol and copying this JSON into the payload of an inject that triggers the **AC import** node, two **permissions** nodes return true when checking both *user* and *mod* for the previously listed permissions.
 ![Import](figures/import.png)
+
+To block further changes to the set permissions (until a re-initialization of accesscontrol), the **lock** node is called. The instance cannot be unlocked. Since it is saved only in memory, changes can be made by restarting Node-RED o by forcing re-creation of the instance with **AC init**.
+![Lock](figures/lock.png)
 
 
 

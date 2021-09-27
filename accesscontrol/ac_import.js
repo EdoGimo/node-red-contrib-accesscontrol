@@ -24,17 +24,20 @@ module.exports = function(RED) {
                 mongoField = node.mongo;
             }
 
-            const ac = flowContext.get("accesscontrol");
-
             //catch AccessControlError
             try {
+
+                const ac = flowContext.get("accesscontrol");
+
+                if(!ac){
+                    throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
+                }
 
                 if(mongoField){
                     var index = db.findIndex(x => x._id === mongoField);
 
                     if(index == -1){
-                        node.warn("Cannot find the specified MongoDB '_id' in the JSON.");
-                        return null;
+                        throw new Error("Cannot find the specified MongoDB '_id' in the JSON.");
                     }
 
                     delete db[index]._id;
@@ -43,19 +46,22 @@ module.exports = function(RED) {
 
                 //read grants from payload (string)
                 ac.setGrants(db);
-                node.warn("Permissions successfully imported.");
+                node.log("Permissions successfully imported.");
 
                 //clear msg
                 msg = {};
 
+                
                 node.send(msg);
-            }
-            catch(error) {
-                if (error instanceof TypeError){
+
+
+            }catch(e) {
+                if (e instanceof TypeError){
                     node.warn("Missing payload or value not an AccessControl compatible JSON.");
                     return null;
                 } else{
-                    throw error;
+                    node.warn(e.message);
+                    return null;
                 }
             }
         });

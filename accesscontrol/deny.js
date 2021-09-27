@@ -38,162 +38,170 @@ module.exports = function(RED) {
         var node = this;
         node.on('input', function(msg) {
 
-            var whoField;
-            var whatField;
+            try{
 
-            //get the actual value of WHO and WHAT if msg was selected
-            if(node.whoType == "msg"){
-                whoField = RED.util.getMessageProperty(msg,node.who);
-            }else{
-                whoField = node.who;
-            }
-            if(node.whatType == "msg"){
-                whatField = RED.util.getMessageProperty(msg,node.what);
-            }else{
-                whatField = node.what;
-            }
+                var whoField;
+                var whatField;
+    
+                //get the actual value of WHO and WHAT if msg was selected
+                if(node.whoType == "msg"){
+                    whoField = RED.util.getMessageProperty(msg,node.who);
+                }else{
+                    whoField = node.who;
+                }
+                if(node.whatType == "msg"){
+                    whatField = RED.util.getMessageProperty(msg,node.what);
+                }else{
+                    whatField = node.what;
+                }
+    
+                //check if WHO or WHAT are specified
+                if(!whoField || !whatField ){
+                    throw new Error("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
+                }
+    
+                
+                var createAnyField;
+                var createOwnField;
+                var readAnyField;
+                var readOwnField;
+                var updateAnyField;
+                var updateOwnField;
+                var deleteAnyField;
+                var deleteOwnField;
+    
+                //get the actual value of CRUD actions if is in msg + convert to boolean
+                if(node.createAnyType == "msg"){
+                    createAnyField = RED.util.getMessageProperty(msg,node.createAny);
+                    if (typeof(createAnyField) == "string"){
+                        createAnyField = createAnyField === 'true';
+                    }
+                //import as a boolean from the node otherwise
+                }else{
+                    createAnyField = node.createAny === 'true';
+                }
+                if(node.createOwnType == "msg"){
+                    createOwnField = RED.util.getMessageProperty(msg,node.createOwn);
+                    if (typeof(createOwnField) == "string"){
+                        createOwnField = createOwnField === 'true';
+                    }
+                }else{
+                    createOwnField = node.createOwn === 'true';
+                }
+                if(node.readAnyType == "msg"){
+                    readAnyField = RED.util.getMessageProperty(msg,node.readAny);
+                    if (typeof(readAnyField) == "string"){
+                        readAnyField = readAnyField === 'true';
+                    }
+                }else{
+                    readAnyField = node.readAny === 'true';
+                }
+                if(node.readOwnType == "msg"){
+                    readOwnField = RED.util.getMessageProperty(msg,node.readOwn);
+                    if (typeof(readOwnField) == "string"){
+                        readOwnField = readOwnField === 'true';
+                    }
+                }else{
+                    readOwnField = node.readOwn === 'true';
+                }
+                if(node.updateAnyType == "msg"){
+                    updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
+                    if (typeof(updateAnyField) == "string"){
+                        updateAnyField = updateAnyField === 'true';
+                    }
+                }else{
+                    updateAnyField = node.updateAny === 'true';
+                }
+                if(node.updateOwnType == "msg"){
+                    updateOwnField = RED.util.getMessageProperty(msg,node.updateOwn);
+                    if (typeof(updateOwnField) == "string"){
+                        updateOwnField = updateOwnField === 'true';
+                    }
+                }else{
+                    updateOwnField = node.updateOwn === 'true';
+                }
+                if(node.deleteAnyType == "msg"){
+                    deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
+                    if (typeof(deleteAnyField) == "string"){
+                        deleteAnyField = deleteAnyField === 'true';
+                    }
+                }else{
+                    deleteAnyField = node.deleteAny === 'true';
+                }
+                if(node.deleteOwnType == "msg"){
+                    deleteOwnField = RED.util.getMessageProperty(msg,node.deleteOwn);
+                    if (typeof(deleteOwnField) == "string"){
+                        deleteOwnField = deleteOwnField === 'true';
+                    }
+                }else{
+                    deleteOwnField = node.deleteOwn === 'true';
+                }
+    
+                //check if there is an action selected
+                if (!createAnyField && !createOwnField && 
+                    !readAnyField   && !readOwnField && 
+                    !updateAnyField && !updateOwnField && 
+                    !deleteAnyField && !deleteOwnField)
+                {
+                        throw new Error("Check at least one action or check that the msg attributes are not empty!");
+                }
+                
+    
+                //deny permissions
+                const ac = flowContext.get("accesscontrol");
 
-            //check if WHO or WHAT are specified
-            if(!whoField || !whatField ){
-                node.warn("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
+                if(!ac){
+                    throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
+                }
+    
+                if ( (ac.getRoles()).includes(whoField) == false){
+                    throw new Error("The WHO role does not exist. Can't deny permissions to a non-existing role!");
+                }
+    
+                if ( (ac.getResources()).includes(whatField) == false){
+                    throw new Error("The WHAT role does not exist. Can't deny permissions to a non-existing resource!");
+                }
+                
+                //IF both the Any and Own are selected, Any is enough
+                
+                //=== CREATE ===
+                if(createAnyField){
+                    ac.deny(whoField).createAny(whatField);
+                } else if(createOwnField){
+                    ac.deny(whoField).createOwn(whatField);
+                }
+                
+                //=== READ ===
+                if(readAnyField){
+                    ac.deny(whoField).readAny(whatField);
+                } else if(readOwnField){
+                    ac.deny(whoField).readOwn(whatField);
+                }
+    
+                //=== UPDATE ===
+                
+                if(updateAnyField){
+                    ac.deny(whoField).updateAny(whatField);
+                } else if(updateOwnField){
+                    ac.deny(whoField).updateOwn(whatField);
+                }
+    
+                //=== DELETE ===
+                
+                if(deleteAnyField){
+                    ac.deny(whoField).deleteAny(whatField);
+                } else if(deleteOwnField){
+                    ac.deny(whoField).deleteOwn(whatField);
+                }
+               
+    
+                node.send(msg);
+
+
+            } catch (e){
+                node.warn(e.message);
                 return null;
             }
-
-            
-            var createAnyField;
-            var createOwnField;
-            var readAnyField;
-            var readOwnField;
-            var updateAnyField;
-            var updateOwnField;
-            var deleteAnyField;
-            var deleteOwnField;
-
-            //get the actual value of CRUD actions if is in msg + convert to boolean
-            if(node.createAnyType == "msg"){
-                createAnyField = RED.util.getMessageProperty(msg,node.createAny);
-                if (typeof(createAnyField) == "string"){
-                    createAnyField = createAnyField === 'true';
-                }
-            //import as a boolean from the node otherwise
-            }else{
-                createAnyField = node.createAny === 'true';
-            }
-            if(node.createOwnType == "msg"){
-                createOwnField = RED.util.getMessageProperty(msg,node.createOwn);
-                if (typeof(createOwnField) == "string"){
-                    createOwnField = createOwnField === 'true';
-                }
-            }else{
-                createOwnField = node.createOwn === 'true';
-            }
-            if(node.readAnyType == "msg"){
-                readAnyField = RED.util.getMessageProperty(msg,node.readAny);
-                if (typeof(readAnyField) == "string"){
-                    readAnyField = readAnyField === 'true';
-                }
-            }else{
-                readAnyField = node.readAny === 'true';
-            }
-            if(node.readOwnType == "msg"){
-                readOwnField = RED.util.getMessageProperty(msg,node.readOwn);
-                if (typeof(readOwnField) == "string"){
-                    readOwnField = readOwnField === 'true';
-                }
-            }else{
-                readOwnField = node.readOwn === 'true';
-            }
-            if(node.updateAnyType == "msg"){
-                updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
-                if (typeof(updateAnyField) == "string"){
-                    updateAnyField = updateAnyField === 'true';
-                }
-            }else{
-                updateAnyField = node.updateAny === 'true';
-            }
-            if(node.updateOwnType == "msg"){
-                updateOwnField = RED.util.getMessageProperty(msg,node.updateOwn);
-                if (typeof(updateOwnField) == "string"){
-                    updateOwnField = updateOwnField === 'true';
-                }
-            }else{
-                updateOwnField = node.updateOwn === 'true';
-            }
-            if(node.deleteAnyType == "msg"){
-                deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
-                if (typeof(deleteAnyField) == "string"){
-                    deleteAnyField = deleteAnyField === 'true';
-                }
-            }else{
-                deleteAnyField = node.deleteAny === 'true';
-            }
-            if(node.deleteOwnType == "msg"){
-                deleteOwnField = RED.util.getMessageProperty(msg,node.deleteOwn);
-                if (typeof(deleteOwnField) == "string"){
-                    deleteOwnField = deleteOwnField === 'true';
-                }
-            }else{
-                deleteOwnField = node.deleteOwn === 'true';
-            }
-
-            //check if there is an action selected
-            if (!createAnyField && !createOwnField && 
-                !readAnyField   && !readOwnField && 
-                !updateAnyField && !updateOwnField && 
-                !deleteAnyField && !deleteOwnField)
-            {
-                    node.warn("Check at least one action or check that the msg attributes are not empty!");
-                    return null;
-            }
-            
-
-            //deny permissions
-            const ac = flowContext.get("accesscontrol");
-
-            if ( (ac.getRoles()).includes(whoField) == false){
-                node.warn("The WHO role does not exist. Can't deny permissions to a non-existing role!");
-                return null;
-            }
-
-            if ( (ac.getResources()).includes(whatField) == false){
-                node.warn("The WHAT role does not exist. Can't deny permissions to a non-existing resource!");
-                return null;
-            }
-            
-            //IF both the Any and Own are selected, Any is enough
-            
-            //=== CREATE ===
-            if(createAnyField){
-                ac.deny(whoField).createAny(whatField);
-            } else if(createOwnField){
-                ac.deny(whoField).createOwn(whatField);
-            }
-            
-            //=== READ ===
-            if(readAnyField){
-                ac.deny(whoField).readAny(whatField);
-            } else if(readOwnField){
-                ac.deny(whoField).readOwn(whatField);
-            }
-
-            //=== UPDATE ===
-            
-            if(updateAnyField){
-                ac.deny(whoField).updateAny(whatField);
-            } else if(updateOwnField){
-                ac.deny(whoField).updateOwn(whatField);
-            }
-
-            //=== DELETE ===
-            
-            if(deleteAnyField){
-                ac.deny(whoField).deleteAny(whatField);
-            } else if(deleteOwnField){
-                ac.deny(whoField).deleteOwn(whatField);
-            }
-           
-
-            node.send(msg);
         });
     }
     RED.nodes.registerType("deny", DenyNode);

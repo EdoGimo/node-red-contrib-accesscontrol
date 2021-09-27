@@ -13,18 +13,25 @@ module.exports = function(RED) {
 
         node.on('input', function(msg) {
 
-            //abort if flowcontext has already been set in the context
-            if(!node.force && flowContext.get("accesscontrol") != null){
+            try{
+
+
+                //abort if flowcontext has already been set in the context
+                if(!node.force && flowContext.get("accesscontrol") != null){
+                    throw new Error("Context already set.");
+                }
+                
+                const AccessControl = require('accesscontrol');
+                const ac = new AccessControl();
+
+
+                //set context for following nodes
+                flowContext.set("accesscontrol", ac);
+           
+            }catch(e){
+                node.warn(e.message);
                 return null;
             }
-            const AccessControl = require('accesscontrol');
-            const ac = new AccessControl();
-
-
-            //set context for following nodes
-            flowContext.set("accesscontrol", ac);
-           
-            //node.send(msg);
         });
     }
     RED.nodes.registerType("AC init", ACInitNode);

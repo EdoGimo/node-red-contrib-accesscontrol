@@ -23,21 +23,32 @@ module.exports = function(RED) {
                 mongoField = node.mongo;
             }
 
-            const ac = flowContext.get("accesscontrol");
+            try{
+                const ac = flowContext.get("accesscontrol");
 
-            //clear msg
-            msg = {};
+                if(!ac){
+                    throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
+                }
+    
+                //clear msg
+                msg = {};
+    
+                //add mongoDB _id value, to override the object in mongoDB when using 'save'
+                if (mongoField){
+                    msg._id = mongoField;
+                }
+            
+                //add grants to payload (string)
+                msg.payload = ac.getGrants();
+               
+    
+                node.send(msg);
 
-            //add mongoDB _id value, to override the object in mongoDB when using 'save'
-            if (mongoField){
-                msg._id = mongoField;
+                
+            }catch(e){
+                node.warn(e.message);
+                return null;
             }
-        
-            //add grants to payload (string)
-            msg.payload = ac.getGrants();
-           
-
-            node.send(msg);
         });
     }
     RED.nodes.registerType("AC export", ACExportNode);
