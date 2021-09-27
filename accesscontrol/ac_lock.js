@@ -26,10 +26,10 @@ module.exports = function(RED) {
                
                 ac.lock();
 
-                node.log("Instance locked.")
+                node.warn("Instance locked.")
             
             }catch(e){
-                node.warn(e.message);
+                node.error(e.message);
                 return null;
             }
         

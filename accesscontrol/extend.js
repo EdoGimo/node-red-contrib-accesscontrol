@@ -62,7 +62,7 @@ module.exports = function(RED) {
 
 
             }catch(e){
-                node.warn(e.message);
+                node.error(e.message);
                 return null;
             }
         });

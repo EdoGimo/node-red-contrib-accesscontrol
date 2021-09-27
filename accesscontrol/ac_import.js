@@ -46,7 +46,7 @@ module.exports = function(RED) {
 
                 //read grants from payload (string)
                 ac.setGrants(db);
-                node.log("Permissions successfully imported.");
+                node.warn("Permissions successfully imported.");
 
                 //clear msg
                 msg = {};
@@ -57,10 +57,10 @@ module.exports = function(RED) {
 
             }catch(e) {
                 if (e instanceof TypeError){
-                    node.warn("Missing payload or value not an AccessControl compatible JSON.");
+                    node.error("Missing payload or value not an AccessControl compatible JSON.");
                     return null;
                 } else{
-                    node.warn(e.message);
+                    node.error(e.message);
                     return null;
                 }
             }

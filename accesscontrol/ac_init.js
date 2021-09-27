@@ -29,7 +29,7 @@ module.exports = function(RED) {
                 flowContext.set("accesscontrol", ac);
            
             }catch(e){
-                node.warn(e.message);
+                node.error(e.message);
                 return null;
             }
         });
