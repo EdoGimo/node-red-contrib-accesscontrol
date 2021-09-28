@@ -4,4 +4,4 @@ node_js:
   
 before_script: cd $TRAVIS_BUILD_DIR
 script:
-  - npm run cover
+  - npm run build
