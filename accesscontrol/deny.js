@@ -1,6 +1,6 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     function DenyNode(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
 
         //options
         this.who = config.who;
@@ -30,37 +30,37 @@ module.exports = function(RED) {
         this.what = config.what;
         this.whatType = config.whatType;
 
-        
+
         //context selection (change ".flow" to ".global" for global context)
         var flowContext = this.context().flow;
 
         //MAIN code
         var node = this;
-        node.on('input', function(msg) {
+        node.on('input', function (msg) {
 
-            try{
+            try {
 
                 var whoField;
                 var whatField;
-    
+
                 //get the actual value of WHO and WHAT if msg was selected
-                if(node.whoType == "msg"){
-                    whoField = RED.util.getMessageProperty(msg,node.who);
-                }else{
+                if (node.whoType == "msg") {
+                    whoField = RED.util.getMessageProperty(msg, node.who);
+                } else {
                     whoField = node.who;
                 }
-                if(node.whatType == "msg"){
-                    whatField = RED.util.getMessageProperty(msg,node.what);
-                }else{
+                if (node.whatType == "msg") {
+                    whatField = RED.util.getMessageProperty(msg, node.what);
+                } else {
                     whatField = node.what;
                 }
-    
+
                 //check if WHO or WHAT are specified
-                if(!whoField || !whatField ){
+                if (!whoField || !whatField) {
                     throw new Error("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
                 }
-    
-                
+
+
                 var createAnyField;
                 var createOwnField;
                 var readAnyField;
@@ -69,136 +69,135 @@ module.exports = function(RED) {
                 var updateOwnField;
                 var deleteAnyField;
                 var deleteOwnField;
-    
+
                 //get the actual value of CRUD actions if is in msg + convert to boolean
-                if(node.createAnyType == "msg"){
-                    createAnyField = RED.util.getMessageProperty(msg,node.createAny);
-                    if (typeof(createAnyField) == "string"){
+                if (node.createAnyType == "msg") {
+                    createAnyField = RED.util.getMessageProperty(msg, node.createAny);
+                    if (typeof (createAnyField) == "string") {
                         createAnyField = createAnyField === 'true';
                     }
-                //import as a boolean from the node otherwise
-                }else{
+                    //import as a boolean from the node otherwise
+                } else {
                     createAnyField = node.createAny === 'true';
                 }
-                if(node.createOwnType == "msg"){
-                    createOwnField = RED.util.getMessageProperty(msg,node.createOwn);
-                    if (typeof(createOwnField) == "string"){
+                if (node.createOwnType == "msg") {
+                    createOwnField = RED.util.getMessageProperty(msg, node.createOwn);
+                    if (typeof (createOwnField) == "string") {
                         createOwnField = createOwnField === 'true';
                     }
-                }else{
+                } else {
                     createOwnField = node.createOwn === 'true';
                 }
-                if(node.readAnyType == "msg"){
-                    readAnyField = RED.util.getMessageProperty(msg,node.readAny);
-                    if (typeof(readAnyField) == "string"){
+                if (node.readAnyType == "msg") {
+                    readAnyField = RED.util.getMessageProperty(msg, node.readAny);
+                    if (typeof (readAnyField) == "string") {
                         readAnyField = readAnyField === 'true';
                     }
-                }else{
+                } else {
                     readAnyField = node.readAny === 'true';
                 }
-                if(node.readOwnType == "msg"){
-                    readOwnField = RED.util.getMessageProperty(msg,node.readOwn);
-                    if (typeof(readOwnField) == "string"){
+                if (node.readOwnType == "msg") {
+                    readOwnField = RED.util.getMessageProperty(msg, node.readOwn);
+                    if (typeof (readOwnField) == "string") {
                         readOwnField = readOwnField === 'true';
                     }
-                }else{
+                } else {
                     readOwnField = node.readOwn === 'true';
                 }
-                if(node.updateAnyType == "msg"){
-                    updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
-                    if (typeof(updateAnyField) == "string"){
+                if (node.updateAnyType == "msg") {
+                    updateAnyField = RED.util.getMessageProperty(msg, node.updateAny);
+                    if (typeof (updateAnyField) == "string") {
                         updateAnyField = updateAnyField === 'true';
                     }
-                }else{
+                } else {
                     updateAnyField = node.updateAny === 'true';
                 }
-                if(node.updateOwnType == "msg"){
-                    updateOwnField = RED.util.getMessageProperty(msg,node.updateOwn);
-                    if (typeof(updateOwnField) == "string"){
+                if (node.updateOwnType == "msg") {
+                    updateOwnField = RED.util.getMessageProperty(msg, node.updateOwn);
+                    if (typeof (updateOwnField) == "string") {
                         updateOwnField = updateOwnField === 'true';
                     }
-                }else{
+                } else {
                     updateOwnField = node.updateOwn === 'true';
                 }
-                if(node.deleteAnyType == "msg"){
-                    deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
-                    if (typeof(deleteAnyField) == "string"){
+                if (node.deleteAnyType == "msg") {
+                    deleteAnyField = RED.util.getMessageProperty(msg, node.deleteAny);
+                    if (typeof (deleteAnyField) == "string") {
                         deleteAnyField = deleteAnyField === 'true';
                     }
-                }else{
+                } else {
                     deleteAnyField = node.deleteAny === 'true';
                 }
-                if(node.deleteOwnType == "msg"){
-                    deleteOwnField = RED.util.getMessageProperty(msg,node.deleteOwn);
-                    if (typeof(deleteOwnField) == "string"){
+                if (node.deleteOwnType == "msg") {
+                    deleteOwnField = RED.util.getMessageProperty(msg, node.deleteOwn);
+                    if (typeof (deleteOwnField) == "string") {
                         deleteOwnField = deleteOwnField === 'true';
                     }
-                }else{
+                } else {
                     deleteOwnField = node.deleteOwn === 'true';
                 }
-    
+
                 //check if there is an action selected
-                if (!createAnyField && !createOwnField && 
-                    !readAnyField   && !readOwnField && 
-                    !updateAnyField && !updateOwnField && 
-                    !deleteAnyField && !deleteOwnField)
-                {
-                        throw new Error("Check at least one action or check that the msg attributes are not empty!");
+                if (!createAnyField && !createOwnField &&
+                    !readAnyField && !readOwnField &&
+                    !updateAnyField && !updateOwnField &&
+                    !deleteAnyField && !deleteOwnField) {
+                    throw new Error("Check at least one action or check that the msg attributes are not empty!");
                 }
-                
-    
+
+
                 //deny permissions
                 const ac = flowContext.get("accesscontrol");
 
-                if(!ac){
+                if (!ac) {
                     throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
                 }
-    
-                if ( (ac.getRoles()).includes(whoField) == false){
+
+                if ((ac.getRoles()).includes(whoField) == false) {
                     throw new Error("The WHO role does not exist. Can't deny permissions to a non-existing role!");
                 }
-    
-                if ( (ac.getResources()).includes(whatField) == false){
+
+                if ((ac.getResources()).includes(whatField) == false) {
                     throw new Error("The WHAT role does not exist. Can't deny permissions to a non-existing resource!");
                 }
-                
+
                 //IF both the Any and Own are selected, Any is enough
-                
+
                 //=== CREATE ===
-                if(createAnyField){
+                if (createAnyField) {
                     ac.deny(whoField).createAny(whatField);
-                } else if(createOwnField){
+                } else if (createOwnField) {
                     ac.deny(whoField).createOwn(whatField);
                 }
-                
+
                 //=== READ ===
-                if(readAnyField){
+                if (readAnyField) {
                     ac.deny(whoField).readAny(whatField);
-                } else if(readOwnField){
+                } else if (readOwnField) {
                     ac.deny(whoField).readOwn(whatField);
                 }
-    
+
                 //=== UPDATE ===
-                
-                if(updateAnyField){
+
+                if (updateAnyField) {
                     ac.deny(whoField).updateAny(whatField);
-                } else if(updateOwnField){
+                } else if (updateOwnField) {
                     ac.deny(whoField).updateOwn(whatField);
                 }
-    
+
                 //=== DELETE ===
-                
-                if(deleteAnyField){
+
+                if (deleteAnyField) {
                     ac.deny(whoField).deleteAny(whatField);
-                } else if(deleteOwnField){
+                } else if (deleteOwnField) {
                     ac.deny(whoField).deleteOwn(whatField);
                 }
-               
-    
+
+
                 node.send(msg);
 
 
-            } catch (e){
+            } catch (e) {
                 node.error(e.message);
                 return null;
             }

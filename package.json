@@ -2,26 +2,35 @@
 	"name": "node-red-contrib-accesscontrol",
 	"version": "0.4.0",
 	"description": "Node-RED wrapper for the accesscontrol npm module.",
-    "dependencies": {
-		"accesscontrol":"2.2.1"
+	"dependencies": {
+		"accesscontrol": "2.2.1"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/edogimo/node-red-contrib-accesscontrol.git"
-	  },
-	"keywords": ["node-red", "accesscontrol", "access", "control", "RBAC", "ABAC", "permissions", "mongodb"],
+	},
+	"keywords": [
+		"node-red",
+		"accesscontrol",
+		"access",
+		"control",
+		"RBAC",
+		"ABAC",
+		"permissions",
+		"mongodb"
+	],
 	"node-red": {
 		"nodes": {
-			"ACInit":"accesscontrol/ac_init.js",
-			"ACExport":"accesscontrol/ac_export.js",
-			"ACImport":"accesscontrol/ac_import.js",
-			"Permission":"accesscontrol/permission.js",
-			"Permissions":"accesscontrol/permissions.js",
-			"Grant":"accesscontrol/grant.js",
-			"Deny":"accesscontrol/deny.js",
-			"Extend":"accesscontrol/extend.js",
-			"Remove":"accesscontrol/remove.js",
-			"Lock":"accesscontrol/ac_lock.js"
+			"ACInit": "accesscontrol/ac_init.js",
+			"ACExport": "accesscontrol/ac_export.js",
+			"ACImport": "accesscontrol/ac_import.js",
+			"Permission": "accesscontrol/permission.js",
+			"Permissions": "accesscontrol/permissions.js",
+			"Grant": "accesscontrol/grant.js",
+			"Deny": "accesscontrol/deny.js",
+			"Extend": "accesscontrol/extend.js",
+			"Remove": "accesscontrol/remove.js",
+			"Lock": "accesscontrol/ac_lock.js"
 		}
 	}
 }

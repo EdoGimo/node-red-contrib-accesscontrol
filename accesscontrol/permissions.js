@@ -1,6 +1,6 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     function PermissionsNode(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
 
         //options
         this.who = config.who;
@@ -42,30 +42,30 @@ module.exports = function(RED) {
 
         //MAIN code
         var node = this;
-        node.on('input', function(msg) {
+        node.on('input', function (msg) {
 
-            try{
+            try {
 
                 var whoField;
                 var whatField;
 
                 //get the actual value of WHO and WHAT if msg was selected
-                if(node.whoType == "msg"){
-                    whoField = RED.util.getMessageProperty(msg,node.who);
-                }else{
+                if (node.whoType == "msg") {
+                    whoField = RED.util.getMessageProperty(msg, node.who);
+                } else {
                     whoField = node.who;
                 }
-                if(node.whatType == "msg"){
-                    whatField = RED.util.getMessageProperty(msg,node.what);
-                }else{
+                if (node.whatType == "msg") {
+                    whatField = RED.util.getMessageProperty(msg, node.what);
+                } else {
                     whatField = node.what;
                 }
 
                 //check if WHO or WHAT are specified
-                if(!whoField || !whatField ){
+                if (!whoField || !whatField) {
                     throw new Error("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
                 }
-                
+
 
                 var createAnyField;
                 var createOwnField;
@@ -84,216 +84,215 @@ module.exports = function(RED) {
                 var deleteAttrField;
 
                 //get the actual value of CRUD actions if is in msg + convert to boolean
-                if(node.createAnyType == "msg"){
-                    createAnyField = RED.util.getMessageProperty(msg,node.createAny);
-                    if (typeof(createAnyField) == "string"){
+                if (node.createAnyType == "msg") {
+                    createAnyField = RED.util.getMessageProperty(msg, node.createAny);
+                    if (typeof (createAnyField) == "string") {
                         createAnyField = createAnyField === 'true';
                     }
-                //import as a boolean from the node otherwise
-                }else{
+                    //import as a boolean from the node otherwise
+                } else {
                     createAnyField = node.createAny === 'true';
                 }
-                if(node.createOwnType == "msg"){
-                    createOwnField = RED.util.getMessageProperty(msg,node.createOwn);
-                    if (typeof(createOwnField) == "string"){
+                if (node.createOwnType == "msg") {
+                    createOwnField = RED.util.getMessageProperty(msg, node.createOwn);
+                    if (typeof (createOwnField) == "string") {
                         createOwnField = createOwnField === 'true';
                     }
-                }else{
+                } else {
                     createOwnField = node.createOwn === 'true';
                 }
-                if(node.createType == "msg"){
-                    createAttrField = RED.util.getMessageProperty(msg,node.create);
-                }else if(node.create){
+                if (node.createType == "msg") {
+                    createAttrField = RED.util.getMessageProperty(msg, node.create);
+                } else if (node.create) {
                     //import as array if it is specified
-                    createAttrField = (node.create).split(",").map(item=>item.trim());
+                    createAttrField = (node.create).split(",").map(item => item.trim());
                 }
 
-                
-                if(node.readAnyType == "msg"){
-                    readAnyField = RED.util.getMessageProperty(msg,node.readAny);
-                    if (typeof(readAnyField) == "string"){
+
+                if (node.readAnyType == "msg") {
+                    readAnyField = RED.util.getMessageProperty(msg, node.readAny);
+                    if (typeof (readAnyField) == "string") {
                         readAnyField = readAnyField === 'true';
                     }
-                }else{
+                } else {
                     readAnyField = node.readAny === 'true';
                 }
-                if(node.readOwnType == "msg"){
-                    readOwnField = RED.util.getMessageProperty(msg,node.readOwn);
-                    if (typeof(readOwnField) == "string"){
+                if (node.readOwnType == "msg") {
+                    readOwnField = RED.util.getMessageProperty(msg, node.readOwn);
+                    if (typeof (readOwnField) == "string") {
                         readOwnField = readOwnField === 'true';
                     }
-                }else{
+                } else {
                     readOwnField = node.readOwn === 'true';
                 }
-                if(node.readType == "msg"){
-                    readAttrField = RED.util.getMessageProperty(msg,node.read);
-                }else if(node.read){
-                    readAttrField = (node.read).split(",").map(item=>item.trim());
+                if (node.readType == "msg") {
+                    readAttrField = RED.util.getMessageProperty(msg, node.read);
+                } else if (node.read) {
+                    readAttrField = (node.read).split(",").map(item => item.trim());
                 }
 
 
-                if(node.updateAnyType == "msg"){
-                    updateAnyField = RED.util.getMessageProperty(msg,node.updateAny);
-                    if (typeof(updateAnyField) == "string"){
+                if (node.updateAnyType == "msg") {
+                    updateAnyField = RED.util.getMessageProperty(msg, node.updateAny);
+                    if (typeof (updateAnyField) == "string") {
                         updateAnyField = updateAnyField === 'true';
                     }
-                }else{
+                } else {
                     updateAnyField = node.updateAny === 'true';
                 }
-                if(node.updateOwnType == "msg"){
-                    updateOwnField = RED.util.getMessageProperty(msg,node.updateOwn);
-                    if (typeof(updateOwnField) == "string"){
+                if (node.updateOwnType == "msg") {
+                    updateOwnField = RED.util.getMessageProperty(msg, node.updateOwn);
+                    if (typeof (updateOwnField) == "string") {
                         updateOwnField = updateOwnField === 'true';
                     }
-                }else{
+                } else {
                     updateOwnField = node.updateOwn === 'true';
                 }
-                if(node.updateType == "msg"){
-                    updateAttrField = RED.util.getMessageProperty(msg,node.update);
-                }else if(node.update){
-                    updateAttrField = (node.update).split(",").map(item=>item.trim());
+                if (node.updateType == "msg") {
+                    updateAttrField = RED.util.getMessageProperty(msg, node.update);
+                } else if (node.update) {
+                    updateAttrField = (node.update).split(",").map(item => item.trim());
                 }
 
 
-                if(node.deleteAnyType == "msg"){
-                    deleteAnyField = RED.util.getMessageProperty(msg,node.deleteAny);
-                    if (typeof(deleteAnyField) == "string"){
+                if (node.deleteAnyType == "msg") {
+                    deleteAnyField = RED.util.getMessageProperty(msg, node.deleteAny);
+                    if (typeof (deleteAnyField) == "string") {
                         deleteAnyField = deleteAnyField === 'true';
                     }
-                }else{
+                } else {
                     deleteAnyField = node.deleteAny === 'true';
                 }
-                if(node.deleteOwnType == "msg"){
-                    deleteOwnField = RED.util.getMessageProperty(msg,node.deleteOwn);
-                    if (typeof(deleteOwnField) == "string"){
+                if (node.deleteOwnType == "msg") {
+                    deleteOwnField = RED.util.getMessageProperty(msg, node.deleteOwn);
+                    if (typeof (deleteOwnField) == "string") {
                         deleteOwnField = deleteOwnField === 'true';
                     }
-                }else{
+                } else {
                     deleteOwnField = node.deleteOwn === 'true';
                 }
-                if(node.deleteType == "msg"){
-                    deleteAttrField = RED.util.getMessageProperty(msg,node.delete);
-                }else if(node.delete){
-                    deleteAttrField = (node.delete).split(",").map(item=>item.trim());
+                if (node.deleteType == "msg") {
+                    deleteAttrField = RED.util.getMessageProperty(msg, node.delete);
+                } else if (node.delete) {
+                    deleteAttrField = (node.delete).split(",").map(item => item.trim());
                 }
-                
+
 
                 //check if there is an action selected
-                if (!createAnyField && !createOwnField && 
-                    !readAnyField   && !readOwnField && 
-                    !updateAnyField && !updateOwnField && 
-                    !deleteAnyField && !deleteOwnField)
-                {
+                if (!createAnyField && !createOwnField &&
+                    !readAnyField && !readOwnField &&
+                    !updateAnyField && !updateOwnField &&
+                    !deleteAnyField && !deleteOwnField) {
                     throw new Error("No CRUD action specified. Check at least one (or that msg attributes are not all empty)!");
                 }
 
 
                 const ac = flowContext.get("accesscontrol");
 
-                if(!ac){
+                if (!ac) {
                     throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
                 }
 
-                
+
                 var permissions = null;
                 var proceed = true;
 
 
                 //check if role and resource exist
-                if ( (ac.getRoles()).includes(whoField) == false){
+                if ((ac.getRoles()).includes(whoField) == false) {
                     throw new Error("The WHO role does not exist. Create it with the grant node before.");
                 }
 
-                if ( (ac.getResources()).includes(whatField) == false){
+                if ((ac.getResources()).includes(whatField) == false) {
                     throw new Error("The WHAT role does not exist. Create it with the grant node before.");
                 }
 
 
                 //control if permissions are correct for ANY
-                if(createAnyField == true){
+                if (createAnyField == true) {
                     permissions = ac.can(whoField).createAny(whatField);
 
                     proceed = proceedCheck(permissions, createAttrField);
-                    
-                //control if permissions are correct for OWN
-                } else if(createOwnField == true){
+
+                    //control if permissions are correct for OWN
+                } else if (createOwnField == true) {
                     permissions = ac.can(whoField).createOwn(whatField);
 
                     proceed = proceedCheck(permissions, createAttrField)
                 }
 
-                if(proceed == true && readAnyField == true){
+                if (proceed == true && readAnyField == true) {
                     permissions = ac.can(whoField).readAny(whatField);
-                    
+
                     proceed = proceedCheck(permissions, readAttrField);
 
-                }else if(proceed == true && readOwnField == true){
+                } else if (proceed == true && readOwnField == true) {
                     permissions = ac.can(whoField).readOwn(whatField);
-                    
+
                     proceed = proceedCheck(permissions, readAttrField);
                 }
 
-                if(proceed == true && updateAnyField == true){
+                if (proceed == true && updateAnyField == true) {
                     permissions = ac.can(whoField).updateAny(whatField);
-                    
+
                     proceed = proceedCheck(permissions, updateAttrField);
-                    
-                }else if(proceed == true && updateOwnField == true){
+
+                } else if (proceed == true && updateOwnField == true) {
                     permissions = ac.can(whoField).updateOwn(whatField);
-                    
+
                     proceed = proceedCheck(permissions, updateAttrField);
                 }
 
-                if(proceed == true && deleteAnyField == true){
+                if (proceed == true && deleteAnyField == true) {
                     permissions = ac.can(whoField).deleteAny(whatField);
-                    
+
                     proceed = proceedCheck(permissions, deleteAttrField);
 
-                }else if(proceed == true && deleteOwnField == true){
+                } else if (proceed == true && deleteOwnField == true) {
                     permissions = ac.can(whoField).deleteOwn(whatField);
 
                     proceed = proceedCheck(permissions, deleteAttrField);
                 }
-            
+
                 //output
                 msg.payload = proceed;
 
-                
+
                 node.send(msg);
 
-                
-            }catch(e){
+
+            } catch (e) {
                 node.error(e.message);
                 return null;
             }
         });
 
 
-        
-        function proceedCheck(permissions, attrField){
+
+        function proceedCheck(permissions, attrField) {
             //check if target is contained in arr
             let checker = (arr, target) => target.every(v => arr.includes(v));
-    
+
             //if permission is false, avoid all the following IFs
-            if(permissions.granted == false){
+            if (permissions.granted == false) {
                 return false;
-            
-            //if permission is true and attributes are specified, run additional checks
-            }else if(attrField){
+
+                //if permission is true and attributes are specified, run additional checks
+            } else if (attrField) {
                 var attr = permissions.attributes;
-    
+
                 //if both are arrays (attr is always returned as such)
-                if(Array.isArray(attrField)){
+                if (Array.isArray(attrField)) {
                     return checker(attr, attrField);
-    
-                //if they are not arrays
-                } else{
+
+                    //if they are not arrays
+                } else {
                     node.warn("An 'attribute' value passed via msg is not an array!");
                     return false;
                 }
-    
-            //if permission is true and attributes are NOT specified, go on
-            }else{
+
+                //if permission is true and attributes are NOT specified, go on
+            } else {
                 return true;
             }
         }

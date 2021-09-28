@@ -1,26 +1,26 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     function ACImportNode(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
 
         //options
         this.mongo = config.mongo;
         this.mongoType = config.mongoType;
-        
+
         //context selection (change ".flow" to ".global" for global context)
         var flowContext = this.context().flow;
 
         //MAIN code
         var node = this;
-        node.on('input', function(msg) {
+        node.on('input', function (msg) {
 
             var db = msg.payload;
             var mongoField;
-            
+
 
             //get the actual value of _id if msg was selected
-            if(node.mongoType == "msg"){
-                mongoField = RED.util.getMessageProperty(msg,node.mongo);
-            }else{
+            if (node.mongoType == "msg") {
+                mongoField = RED.util.getMessageProperty(msg, node.mongo);
+            } else {
                 mongoField = node.mongo;
             }
 
@@ -29,14 +29,14 @@ module.exports = function(RED) {
 
                 const ac = flowContext.get("accesscontrol");
 
-                if(!ac){
+                if (!ac) {
                     throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
                 }
 
-                if(mongoField){
+                if (mongoField) {
                     var index = db.findIndex(x => x._id === mongoField);
 
-                    if(index == -1){
+                    if (index == -1) {
                         throw new Error("Cannot find the specified MongoDB '_id' in the JSON.");
                     }
 
@@ -51,15 +51,15 @@ module.exports = function(RED) {
                 //clear msg
                 msg = {};
 
-                
+
                 node.send(msg);
 
 
-            }catch(e) {
-                if (e instanceof TypeError){
+            } catch (e) {
+                if (e instanceof TypeError) {
                     node.error("Missing payload or value not an AccessControl compatible JSON.");
                     return null;
-                } else{
+                } else {
                     node.error(e.message);
                     return null;
                 }

@@ -1,7 +1,7 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     function ACLockNode(config) {
-        RED.nodes.createNode(this,config);
-        
+        RED.nodes.createNode(this, config);
+
         //options
 
         //context selection (change ".flow" to ".global" for global context)
@@ -10,29 +10,29 @@ module.exports = function(RED) {
         //MAIN code
         var node = this;
 
-        node.on('input', function(msg) {
+        node.on('input', function (msg) {
 
 
-            try{
+            try {
                 const ac = flowContext.get("accesscontrol");
 
-                if(!ac){
+                if (!ac) {
                     throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
                 }
 
-                if(ac.isLocked){
+                if (ac.isLocked) {
                     throw new Error("The instance is already locked");
                 }
-               
+
                 ac.lock();
 
                 node.warn("Instance locked.")
-            
-            }catch(e){
+
+            } catch (e) {
                 node.error(e.message);
                 return null;
             }
-        
+
 
         });
     }

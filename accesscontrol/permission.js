@@ -1,6 +1,6 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     function PermissionNode(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
 
         //options
         this.who = config.who;
@@ -15,71 +15,71 @@ module.exports = function(RED) {
 
         //MAIN code
         var node = this;
-        node.on('input', function(msg) {
+        node.on('input', function (msg) {
 
-            try{
+            try {
 
                 var whoField;
                 var whatField;
 
                 //get the actual value of WHO and WHAT if msg was selected
-                if(node.whoType == "msg"){
-                    whoField = RED.util.getMessageProperty(msg,node.who);
-                }else{
+                if (node.whoType == "msg") {
+                    whoField = RED.util.getMessageProperty(msg, node.who);
+                } else {
                     whoField = node.who;
                 }
-                if(node.whatType == "msg"){
-                    whatField = RED.util.getMessageProperty(msg,node.what);
-                }else{
+                if (node.whatType == "msg") {
+                    whatField = RED.util.getMessageProperty(msg, node.what);
+                } else {
                     whatField = node.what;
                 }
 
-                if(!whoField || !whatField || !node.crud){
+                if (!whoField || !whatField || !node.crud) {
                     throw new Error("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
                 }
 
-                
+
                 const ac = flowContext.get("accesscontrol");
-                
-                if(!ac){
+
+                if (!ac) {
                     throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
                 }
 
                 var permission = null;
 
-                switch(node.crud){
+                switch (node.crud) {
                     //CREATE
                     case "create":
-                        if(node.any){
+                        if (node.any) {
                             permission = ac.can(whoField).createAny(whatField);
-                        }else{
+                        } else {
                             permission = ac.can(whoField).createOwn(whatField);
                         }
                         break;
-                    
+
                     //READ
                     case "read":
-                        if(node.any){
+                        if (node.any) {
                             permission = ac.can(whoField).readAny(whatField);
-                        }else{
+                        } else {
                             permission = ac.can(whoField).readOwn(whatField);
                         }
                         break;
-                    
+
                     //UPDATE
                     case "update":
-                        if(node.any){
+                        if (node.any) {
                             permission = ac.can(whoField).updateAny(whatField);
-                        }else{
+                        } else {
                             permission = ac.can(whoField).updateOwn(whatField);
                         }
                         break;
-                    
+
                     //DELETE
                     case "delete":
-                        if(node.any){
+                        if (node.any) {
                             permission = ac.can(whoField).deleteAny(whatField);
-                        }else{
+                        } else {
                             permission = ac.can(whoField).deleteOwn(whatField);
                         }
                         break;
@@ -87,7 +87,7 @@ module.exports = function(RED) {
                     default:
                         throw new Error("An error has occurred when selecting the CRUD value!");
                 }
-            
+
                 //output
                 msg.payload = permission.granted;
                 msg.attributes = permission.attributes;
@@ -95,7 +95,7 @@ module.exports = function(RED) {
                 node.send(msg);
 
 
-            }catch(e){
+            } catch (e) {
                 node.error(e.message);
                 return null;
             }

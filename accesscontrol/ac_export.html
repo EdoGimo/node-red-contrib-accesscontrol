@@ -1,26 +1,26 @@
 <script type="text/javascript">
-    RED.nodes.registerType('AC export',{
+    RED.nodes.registerType('AC export', {
         category: 'access control',
         color: '#ca9758',
         defaults: {
-            name: {value:""},
-            mongo: {value:"", validate: RED.validators.typedInput("mongoType")},
-            mongoType: { value:"str"}
+            name: { value: "" },
+            mongo: { value: "", validate: RED.validators.typedInput("mongoType") },
+            mongoType: { value: "str" }
         },
-        inputs:1,
-        outputs:1,
+        inputs: 1,
+        outputs: 1,
         icon: "font-awesome/fa-upload",
-        label: function() {
-            return this.name||"AC export";
+        label: function () {
+            return this.name || "AC export";
         },
-        oneditprepare: function() {
+        oneditprepare: function () {
             $("#node-input-mongo").typedInput({
                 default: this.mongoType || "str",
-                types:["str", "msg"],
+                types: ["str", "msg"],
                 typeField: $("#node-input-mongoType")
             });
         },
-        onsave: function(){
+        onsave: function () {
             this.mongoType = $("#node-input-mongoType").val();
         }
     });

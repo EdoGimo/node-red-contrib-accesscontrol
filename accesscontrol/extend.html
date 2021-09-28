@@ -1,34 +1,34 @@
 <script type="text/javascript">
-    RED.nodes.registerType('extend',{
+    RED.nodes.registerType('extend', {
         category: 'access control',
         color: '#ca9758',
         defaults: {
-            name: {value:""},
-            who: {value:"", validate: RED.validators.typedInput("whoType"), required: true},
-            whoType: { value:"str"},
-            what: {value:"", validate: RED.validators.typedInput("whatType"), required: true},
-            whatType: { value:"str"}
+            name: { value: "" },
+            who: { value: "", validate: RED.validators.typedInput("whoType"), required: true },
+            whoType: { value: "str" },
+            what: { value: "", validate: RED.validators.typedInput("whatType"), required: true },
+            whatType: { value: "str" }
         },
-        inputs:1,
-        outputs:1,
+        inputs: 1,
+        outputs: 1,
         icon: "font-awesome/fa-shield",
-        label: function() {
-            return this.name||"extend";
+        label: function () {
+            return this.name || "extend";
         },
-        oneditprepare: function() {
+        oneditprepare: function () {
             $("#node-input-who").typedInput({
                 default: this.whoType || "str",
-                types:["str", "msg"],
+                types: ["str", "msg"],
                 typeField: $("#node-input-whoType")
             });
-            
+
             $("#node-input-what").typedInput({
                 default: this.whatType || "str",
-                types:["str", "msg"],
+                types: ["str", "msg"],
                 typeField: $("#node-input-whatType")
             });
         },
-        onsave: function(){
+        onsave: function () {
             this.whoType = $("#node-input-whoType").val();
             this.whatType = $("#node-input-whatType").val();
         }

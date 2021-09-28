@@ -1,36 +1,36 @@
 <script type="text/javascript">
-    RED.nodes.registerType('permission',{
+    RED.nodes.registerType('permission', {
         category: 'access control',
         color: '#87a980',
         defaults: {
-            name: {value:""},
-            who: {value:"", validate: RED.validators.typedInput("whoType"), required: true},
-            whoType: { value:"str"},
-            crud: {value:"create", required: true},
-            any: {value:false},
-            what: {value:"", validate: RED.validators.typedInput("whatType"), required: true},
-            whatType: { value:"str"}
+            name: { value: "" },
+            who: { value: "", validate: RED.validators.typedInput("whoType"), required: true },
+            whoType: { value: "str" },
+            crud: { value: "create", required: true },
+            any: { value: false },
+            what: { value: "", validate: RED.validators.typedInput("whatType"), required: true },
+            whatType: { value: "str" }
         },
-        inputs:1,
-        outputs:1,
+        inputs: 1,
+        outputs: 1,
         icon: "font-awesome/fa-shield",
-        label: function() {
-            return this.name||"permission";
+        label: function () {
+            return this.name || "permission";
         },
-        oneditprepare: function() {
+        oneditprepare: function () {
             $("#node-input-who").typedInput({
                 default: this.whoType || "str",
-                types:["str", "msg"],
+                types: ["str", "msg"],
                 typeField: $("#node-input-whoType")
             });
-            
+
             $("#node-input-what").typedInput({
                 default: this.whatType || "str",
-                types:["str", "msg"],
+                types: ["str", "msg"],
                 typeField: $("#node-input-whatType")
             });
         },
-        onsave: function(){
+        onsave: function () {
             this.whoType = $("#node-input-whoType").val();
             this.whatType = $("#node-input-whatType").val();
         }

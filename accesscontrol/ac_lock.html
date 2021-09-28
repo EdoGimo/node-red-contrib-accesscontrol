@@ -1,15 +1,15 @@
 <script type="text/javascript">
-    RED.nodes.registerType('AC lock',{
+    RED.nodes.registerType('AC lock', {
         category: 'access control',
         color: '#ca9758',
         defaults: {
-            name: {value:""}
+            name: { value: "" }
         },
-        inputs:1,
-        outputs:0,
+        inputs: 1,
+        outputs: 0,
         icon: "font-awesome/fa-shield",
-        label: function() {
-            return this.name||"AC lock";
+        label: function () {
+            return this.name || "AC lock";
         }
     });
 </script>

@@ -1,7 +1,7 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     function ACInitNode(config) {
-        RED.nodes.createNode(this,config);
-        
+        RED.nodes.createNode(this, config);
+
         //options
         this.force = config.force;
 
@@ -11,24 +11,24 @@ module.exports = function(RED) {
         //MAIN code
         var node = this;
 
-        node.on('input', function(msg) {
+        node.on('input', function (msg) {
 
-            try{
+            try {
 
 
                 //abort if flowcontext has already been set in the context
-                if(!node.force && flowContext.get("accesscontrol") != null){
+                if (!node.force && flowContext.get("accesscontrol") != null) {
                     throw new Error("Context already set.");
                 }
-                
+
                 const AccessControl = require('accesscontrol');
                 const ac = new AccessControl();
 
 
                 //set context for following nodes
                 flowContext.set("accesscontrol", ac);
-           
-            }catch(e){
+
+            } catch (e) {
                 node.error(e.message);
                 return null;
             }

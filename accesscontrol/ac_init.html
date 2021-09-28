@@ -1,16 +1,16 @@
 <script type="text/javascript">
-    RED.nodes.registerType('AC init',{
+    RED.nodes.registerType('AC init', {
         category: 'access control',
         color: '#ca9758',
         defaults: {
-            name: {value:""},
-            force: {value:false}
+            name: { value: "" },
+            force: { value: false }
         },
-        inputs:1,
-        outputs:0,
+        inputs: 1,
+        outputs: 0,
         icon: "font-awesome/fa-shield",
-        label: function() {
-            return this.name||"AC init";
+        label: function () {
+            return this.name || "AC init";
         }
     });
 </script>
