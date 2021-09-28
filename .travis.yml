@@ -14,4 +14,3 @@ before_script:
   - npm install -g nyc grunt-cli coveralls
   - npm install node-red
 script:
-  - nyc grunt && nyc report --reporter=text-lcov | coveralls
