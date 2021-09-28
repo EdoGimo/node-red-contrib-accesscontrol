@@ -32,11 +32,5 @@
 			"Remove": "accesscontrol/remove.js",
 			"Lock": "accesscontrol/ac_lock.js"
 		}
-	},
-	"scripts": {
-    		"vuls": "snyk test",
-    		"deps": "npm-check -u && snyk test",
-    		"clean": "rimraf ./lib",
-    		"build": "npm run clean && mkdirp ./lib && tsc"
-	}	
+	}
 }
