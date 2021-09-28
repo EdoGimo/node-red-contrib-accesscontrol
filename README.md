@@ -1,6 +1,8 @@
 # node-red-contrib-accesscontrol
-
-This node is still NOT complete. Errors and wrong behaviour are to be expected.
+[![dependencies Status](https://status.david-dm.org/gh/edogimo/node-red-contrib-accesscontrol.svg)](https://david-dm.org/edogimo/node-red-contrib-accesscontrol)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/EdoGimo/node-red-contrib-accesscontrol/graphs/commit-activity)
+[![vulnerabilities Status](https://snyk.io/test/github/edogimo/node-red-contrib-accesscontrol/badge.svg)](https://snyk.io/test/github/edogimo/node-red-contrib-accesscontrol/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A [Node-RED](https://nodered.org/) implementation of the [accesscontrol](https://www.npmjs.com/package/accesscontrol) nmp module, providing Role Based Access Control with the addition of Attributes (see this [NIST paper](https://csrc.nist.gov/publications/detail/journal-article/2010/adding-attributes-to-role-based-access-control)). 
 Now supporting export/import to/from the [MongoDB node](https://flows.nodered.org/node/node-red-node-mongodb).
