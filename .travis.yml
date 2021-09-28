@@ -1,7 +1,10 @@
 language: node_js
+sudo: false
 node_js:
-  - '12'
-  
-before_script: cd $TRAVIS_BUILD_DIR
+  - "16"
+  - "14"
+  - "12"
+install:
+  - npm install
 script:
-  - npm run build
+  - npm test
