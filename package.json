@@ -32,5 +32,8 @@
 			"Remove": "accesscontrol/remove.js",
 			"Lock": "accesscontrol/ac_lock.js"
 		}
+	},
+	"script": {
+		"test": "npm run build",
 	}
 }
