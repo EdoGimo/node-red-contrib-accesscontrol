@@ -73,7 +73,8 @@
 </script>
 
 <script type="text/html" data-help-name="permission">
-    <p>This node, receiving a message in input, checks if a specified role has a certain permission to access an object. For more permissions at once, use the <b>permissions</b> node</p>
+    <p>This node, receiving a message in input, checks if a specified role has a certain permission to access an object, without taking into consideration attributes.</p> 
+    <p>However, to check permissions, it is preferred to use the <b>permissions</b> node as it supports control of more permissions at once, along with attributes. The present node is not removed to offer a way to access directly the specified attributes.</p>
     <p>The attributes that can be set are:</p>
     <ul>
     <li>WHO: the role;</li>
@@ -81,7 +82,7 @@
     <li>ANY/OWN checkbox: checked if the scope is set to &#39;any&#39;, unchecked if set to &#39;own&#39; (e.g., createAny vs createOwn);</li>
     <li>WHAT: the object to be accessed by the role.</li>
     </ul>
-    <p>The node returns in the payload the result (true/false) and in msg.attributes the potential attributes that can be set.</p>
+    <p>The node returns in the payload the result (true/false) and in msg.attributes the attributes that may have been granted ('*' if none was specified).</p>
     <p><b>Note:</b> WHO and WHAT values can also be specified using the msg attributes: e.g., to get the content of "msg.role" write only "role" after changing the type.</p>
     <h4>AccessControl module's logic</h4>
     <p>Details on module logic at <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>

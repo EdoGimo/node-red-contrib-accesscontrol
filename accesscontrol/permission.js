@@ -90,7 +90,11 @@ module.exports = function (RED) {
 
                 //output
                 msg.payload = permission.granted;
-                msg.attributes = permission.attributes;
+
+                if(permission.granted){
+                    msg.attributes = permission.attributes;
+                }
+
 
                 node.send(msg);
 

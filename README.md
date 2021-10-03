@@ -3,11 +3,11 @@
 [![npm version](https://badge.fury.io/js/node-red-contrib-accesscontrol.svg)](https://badge.fury.io/js/node-red-contrib-accesscontrol)
 [![dependencies Status](https://status.david-dm.org/gh/edogimo/node-red-contrib-accesscontrol.svg)](https://david-dm.org/edogimo/node-red-contrib-accesscontrol)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/EdoGimo/node-red-contrib-accesscontrol/graphs/commit-activity)
-[![vulnerabilities Status](https://snyk.io/test/github/edogimo/node-red-contrib-accesscontrol/badge.svg)](https://snyk.io/test/github/edogimo/node-red-contrib-accesscontrol/badge.svg)
+[![vulnerabilities Status](https://snyk.io/test/github/edogimo/node-red-contrib-accesscontrol/badge.svg)](https://snyk.io/test/github/edogimo/node-red-contrib-accesscontrol)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A [Node-RED](https://nodered.org/) implementation of the [accesscontrol](https://www.npmjs.com/package/accesscontrol) nmp module, providing Role Based Access Control with the addition of Attributes (see this [NIST paper](https://csrc.nist.gov/publications/detail/journal-article/2010/adding-attributes-to-role-based-access-control)). 
-Now supporting export/import to/from the [MongoDB node](https://flows.nodered.org/node/node-red-node-mongodb).
+Also supporting export/import to/from the [MongoDB node](https://flows.nodered.org/node/node-red-node-mongodb).
 
 
 ### Prerequisites
@@ -49,9 +49,9 @@ If necessary, restart Node-RED.
 
 - **remove**: removes either role(s) or resource(s) from AccessControl;
 
-- **permission**: checks if specific permissions are implemented or not;
+- **permission**: checks if a specific permission (**without** attributes) is implemented or not. If it is, returns the potentially specified attributes;
 
-- **permissions**: checks if multiple permissions are implemented or not;
+- **permissions**: checks if multiple permissions (**with** attributes) are implemented or not;
 
 - **AC lock**: freezes the AccessControl instance. Attempts to modify it after calling this node will fail and will be reported.
 
@@ -90,10 +90,10 @@ The **grant** node can set the options using string or by obtaining the value fr
 In this example, it reads the injected values, granting permission of *Create ANY* to role *user* when accessing resource *object*. Attributes are not specified.
 ![Grant](figures/grant.png)
 
-When running the inject node, the values recorded by **grant** are handled by the **permission** node, a simple implementation to test one permission per time. If the permission is found to be correct, true is returned, as in this case. If it is incorrect, false is instead returned.
+When running the inject node, the values recorded by **grant** are handled by the **permission** node, a simple implementation to test one permission per time, without attributes. If the permission is found to be correct, true is returned, as in this case, along with information about the potentially specified attributes. If it is incorrect, false is instead returned.
 ![Permission](figures/permission.png)
 
-To check more permissions at once the **permissions** node can be used: this node's options resemble those of the **grant** node, offering the possibility to select more CRUD actions simultaneously. In a new example (always in the same flow, to maintain the accesscontrol instance), a grant node adds to *user* permission to *Read ANY* and *Update OWN* over *object*. Moreover, for *Update OWN* some attributes are also specified.
+To check more permissions at once the **permissions** node can be used: this node's options resemble those of the **grant** node, offering the possibility to select more CRUD actions simultaneously, plus including attributes. In a new example (always in the same flow, to maintain the accesscontrol instance), a grant node adds to *user* permission to *Read ANY* and *Update OWN* over *object*. Moreover, for *Update OWN* some attributes are also specified.
 ![Grant attributes](figures/grant_with_attr.png)
 
 **Permissions** will return true if at least one of the granted conditions is provided. In those cases where *Update ANY* permission is checked however, also the correct attributes have to be provided (all those specified or a subgroup of them). For example, in the following figure **permissions** confirms that *Read OWN* ("OWN" is logically a subgroup of "ANY") and *Update OWN* with just one of the attributes is permitted.
