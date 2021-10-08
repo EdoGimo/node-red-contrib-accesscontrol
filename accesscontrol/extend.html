@@ -61,7 +61,7 @@
 </script>
 
 <script type="text/html" data-help-name="extend">
-    <p>This node, receiving a message in input, grants to a certain role the permissions of another role.</p>
+    <p>Grants to a certain role the permissions of another role.</p>
     <p>Permissions are not added directly to the new role, but a reference to the other role is added. This means that if the original role (A) is removed or any permission is denied, the beneficiary role (B) loses all the permissions or those denied. However, if a permission that was inherited is deniend only from B, permission nodes will return that B has not lost that permission, as the reference to A still exists.</p>
     <p>Use the extend node with this concept in mind.</p>
     <hr>

@@ -37,19 +37,19 @@ If necessary, restart Node-RED.
 10 nodes are provided:
 - **AC init**: creates the AccessControl instance that contains all permissions (as no database is used). It should be called just once for each execution, although the instance is not overwritten without explicitly specifying it checking the related option;
 
-- **AC export**: export the AccessControl permissions as a string (JSON format);
+- **AC export**: export the AccessControl permissions as a string (JSON format). If specified, it can export with a identifier so it is possible to save the output directly into a MongoDB database, using the specific Node-RED node;
 
-- **AC import**: import the AccessControl permissions from a string (JSON format);
+- **AC import**: import the AccessControl permissions from a string (JSON format). As for the export node, an identifier can be specified to import from MongoDB and remove that field from the JSON;
 
 - **grant**: enables to grant to a role a CRUD action (Create, Read, Update, Delete) over a resource;
 
-- **extend**: a quick way of granting to a role the same permissions of another role;
+- **extend**: a quick way of granting to a role the same permissions of another role, outlining a condition of inheritance towards this;
 
-- **deny**: drops CRUD permissions previously set with grant/extend, along with all optionally set attributes;
+- **deny**: drops CRUD permissions previously set with grant, along with all optionally set attributes;
 
-- **remove**: removes either role(s) or resource(s) from AccessControl;
+- **remove**: removes either specified role(s) or resource(s) from AccessControl;
 
-- **permission**: checks if a specific permission (**without** attributes) is implemented or not. If it is, returns the potentially specified attributes;
+- **permission**: checks if a specific permission (**without** attributes) is implemented or not. The result output can be either true or false based on this. If true, also the attributes that are linked to the operation are returned in a separate message field;
 
 - **permissions**: checks if multiple permissions (**with** attributes) are implemented or not;
 
