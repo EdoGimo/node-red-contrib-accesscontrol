@@ -21,10 +21,14 @@ module.exports = function (RED) {
                 }
 
                 if (ac.isLocked) {
-                    throw new Error("The instance is already locked");
+                    throw new Error("The instance is already locked.");
                 }
 
                 ac.lock();
+
+                if (!ac.isLocked) {
+                    throw new Error("An error occured while locking the instance.");
+                }
 
                 node.warn("Instance locked.")
 
