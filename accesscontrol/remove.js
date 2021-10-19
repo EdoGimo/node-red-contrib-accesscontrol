@@ -27,28 +27,9 @@ module.exports = function (RED) {
                     throw new Error("Define at least one between role and resource.");
                 }
 
-                //get the actual value of who and what if msg was selected
-                if (node.whoType == "msg") {
-                    whoField = RED.util.getMessageProperty(msg, node.who);
-
-                } else if (node.who) {
-                    if ((node.who).includes(",")) {
-                        whoField = (node.who).split(",").map(item => item.trim());
-                    } else {
-                        whoField = node.who;
-                    }
-                }
-
-                if (node.whatType == "msg") {
-                    whatField = RED.util.getMessageProperty(msg, node.what);
-
-                } else if (node.what) {
-                    if ((node.what).includes(",")) {
-                        whatField = (node.what).split(",").map(item => item.trim());
-                    } else {
-                        whatField = node.what;
-                    }
-                }
+                whoField = splitArray(node.who, node.whoType, msg);
+                
+                whatField = splitArray(node.what, node.whatType, msg);
 
 
                 //cannot insert both role and resource
@@ -78,6 +59,7 @@ module.exports = function (RED) {
 
                             //check if the values are present
                             if (!ac.hasRole(element)) {
+
                                 node.warn("Role " + element + " not found.");
                                 missing.push(element);
                             }
@@ -108,6 +90,11 @@ module.exports = function (RED) {
                         }
 
                         ac.removeRoles(whoField);
+
+                        //check if the value has been removed
+                        if (ac.hasRole(whoField)) {
+                            throw new Error("Role was unexpectedly not removed.");
+                        }
                     }
                 }
 
@@ -120,6 +107,7 @@ module.exports = function (RED) {
 
                             //check if the values are present
                             if (!ac.hasResource(element)) {
+
                                 node.warn("Resource " + element + " not found.");
                                 missing.push(element);
                             }
@@ -150,9 +138,13 @@ module.exports = function (RED) {
                         }
 
                         ac.removeResources(whatField);
+
+                        //check if the value has been removed
+                        if (ac.hasResource(whatField)) {
+                            throw new Error("Resource was unexpectedly not removed.");
+                        }
                     }
                 }
-
 
                 node.send(msg);
 
@@ -162,6 +154,39 @@ module.exports = function (RED) {
                 return null;
             }
         });
+
+
+        function splitArray(value, type, msg){
+
+            //characters not accepted
+            const notAccepted = ['&','<','>','"',"'","/","`"];
+
+            //get the actual value of who and what if msg was selected
+            if (type == "msg") {
+                //filter removes empty fields
+                return RED.util.getMessageProperty(msg, value).filter(a=> a);
+
+            //get the actual value of who and what if msg was NOT selected
+            } else if (value) {
+
+                notAccepted.forEach(element => {
+                    if ((value).includes(element)){
+                        throw new Error("Improper characters used. See the documentation.");
+                    }
+                });
+                
+                if ((value).includes(",")) {
+                    //split by comma, map each value to an array field, filter out empty fields
+                    return (value).split(",").map(item => item.trim()).filter(a=> a);
+                } else {
+                    return value;
+                }
+
+            //the current property (who or what) is not selected
+            } else {
+                return null;
+            }
+        }
     }
     RED.nodes.registerType("remove", RemoveNode);
 }
