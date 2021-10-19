@@ -67,7 +67,7 @@ module.exports = function (RED) {
 
                         //if there was a missing fole and force was not set, do not proceed with the removal
                         if (missing.length > 0 && !node.force) {
-                            return null;
+                            throw new Error("Removal interrupted for missing role(s).");
 
                         } else if (missing.length > 0) {
                             whoField = whoField.filter((el) => !missing.includes(el));
@@ -80,6 +80,11 @@ module.exports = function (RED) {
 
                         } else {
                             ac.removeRoles(whoField);
+                        }
+
+                        //check if the values have been removed
+                        if (ac.hasRole(whoField)) {
+                            throw new Error("Roles were unexpectedly not removed.");
                         }
 
                     } else {
@@ -115,7 +120,7 @@ module.exports = function (RED) {
 
                         //if there was a missing resource and force was not set, do not proceed with the removal
                         if (missing.length > 0 && !node.force) {
-                            return null;
+                            throw new Error("Removal interrupted for missing resource(s).");
 
                         } else if (missing.length > 0) {
                             whatField = whatField.filter((el) => !missing.includes(el));
@@ -128,6 +133,11 @@ module.exports = function (RED) {
 
                         } else {
                             ac.removeResources(whatField);
+                        }
+
+                        //check if the values have been removed
+                        if (ac.hasResource(whatField)) {
+                            throw new Error("Resources were unexpectedly not removed.");
                         }
 
                     } else {
