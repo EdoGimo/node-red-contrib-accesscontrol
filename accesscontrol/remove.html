@@ -53,6 +53,8 @@
         <input type="hidden" id="node-input-whoType">
     </div>
 
+    <p style="text-align:center;"> or</p>
+
     <div class="form-row">
         <label for="node-input-what"><i class="fa fa-object-group"></i> Resource</label>
         <input type="text" id="node-input-what" placeholder="Resource, comma-separate for list">
@@ -71,6 +73,7 @@
 <script type="text/html" data-help-name="remove">
     <p>Removes a role or resource from the current Access Control instance. To remove more roles or resources at once, provide an array via msg or comma-separate all the values in the string input.</p>
     <p>Check the force box to remove roles or resources even when one of the values provided in the array does not exist (it usually stops in that case).</p>
+    <p>Some characters are not supported in the string field of role and resource: &,<,>,",',/ and `. However, checks are not made on the content of msg attributes, if those are instead specified.</p>
     <h4>AccessControl module's logic</h4>
     <p>Details on module logic at <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
 </script>

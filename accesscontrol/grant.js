@@ -70,7 +70,7 @@ module.exports = function (RED) {
 
                 //check if WHO or WHAT are specified
                 if (!whoField || !whatField) {
-                    throw new Error("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
+                    throw new Error("WHO or WHAT fields not specified. Ensure the msg attributes are not empty!");
                 }
 
                 var createAnyField;

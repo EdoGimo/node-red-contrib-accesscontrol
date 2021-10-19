@@ -30,7 +30,7 @@ module.exports = function (RED) {
                     throw new Error("An error occured while locking the instance.");
                 }
 
-                node.warn("Instance locked.")
+                node.warn("Instance locked.");
 
             } catch (e) {
                 node.error(e.message);
