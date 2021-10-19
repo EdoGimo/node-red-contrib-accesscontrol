@@ -18,29 +18,14 @@ module.exports = function (RED) {
 
             try {
 
-                var whoField;
-                var whatField;
+                //get the actual value of WHO and WHAT
+                var whoField = splitArray(node.who, node.whoType, msg);
+                var whatField = splitArray(node.what, node.whatType, msg);
 
-                //get the actual value of WHO and WHAT if msg was selected
-                if (node.whoType == "msg") {
-                    whoField = RED.util.getMessageProperty(msg, node.who);
-                } else {
-                    whoField = node.who;
-                }
-                if (node.whatType == "msg") {
-                    whatField = RED.util.getMessageProperty(msg, node.what);
-                } else {
-                    whatField = node.what;
-                }
 
                 //check if configuration was set
                 if (!whoField || !whatField) {
                     throw new Error("WHO or WHAT fields not specified. Check the msg attributes are not empty!");
-                }
-
-                //check if WHO and WHAT are the same role (a role cannot be extended by itself)
-                if (whoField == whatField) {
-                    throw new Error("Can't extend a role with itself!");
                 }
 
                 const ac = flowContext.get("accesscontrol");
@@ -49,14 +34,21 @@ module.exports = function (RED) {
                     throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
                 }
 
-                //check if WHAT exists (a role cannot be extended by a non-existent role)
-                if (!(ac.getRoles()).includes(whatField)) {
-                    throw new Error("The 'Inherit from' role does not exist. Create it with the grant node before.");
-                }
-
-                //extend role
+                //extend role (checks delegated to the module)
                 ac.grant(whoField).extend(whatField);
 
+
+                //postconditions
+                //if WHO is an array
+                if(Array.isArray(whoField)){
+                    //run the function for each element
+                    whoField.forEach(element => {
+                        isInherited(whatField, ac.getInheritedRolesOf(element));
+                    });
+
+                } else {
+                    isInherited(whatField, ac.getInheritedRolesOf(whoField));
+                }
 
                 node.send(msg);
 
@@ -66,6 +58,57 @@ module.exports = function (RED) {
                 return null;
             }
         });
+
+        function splitArray(value, type, msg){
+
+            //characters not accepted
+            const notAccepted = ['&','<','>','"',"'","/","`"];
+
+            //get the actual value if msg was selected
+            if (type == "msg") {
+                //filter removes empty fields
+                return RED.util.getMessageProperty(msg, value).filter(a=> a);
+
+            //get the actual value if msg was NOT selected
+            } else {
+
+                notAccepted.forEach(element => {
+                    if ((value).includes(element)){
+                        throw new Error("Improper characters used. See the documentation.");
+                    }
+                });
+                
+                if ((value).includes(",")) {
+                    //split by comma, map each value to an array field, filter out empty fields
+                    return (value).split(",").map(item => item.trim()).filter(a=> a);
+                } else {
+                    return value;
+                }
+            }
+        }
+
+
+        //checks if inheritance was successful
+        function isInherited(whatField, inherit){
+
+            //check if target is contained in arr
+            let checker = (arr, target) => target.every(v => arr.includes(v));
+
+            //if WHAT is an array
+            if(Array.isArray(whatField)){
+
+                //be sure the arrey is contained in the inherit array (inherited roles of WHO)
+                if (!checker(whatField, inherit)){
+                    throw new Error("Roles unexpectedly not inherited.");
+                }
+            } else {
+
+                //be sure the string is contained in the inherit array
+                if (inherit.indexOf(whatField) === -1){
+                    throw new Error("Role unexpectedly not inherited.");
+                }
+            }
+        }
     }
     RED.nodes.registerType("extend", ExtendNode);
 }

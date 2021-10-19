@@ -19,17 +19,14 @@ module.exports = function (RED) {
 
             try {
 
-                var whoField;
-                var whatField;
-
                 //cannot leave both empty
                 if (!node.who && !node.what) {
                     throw new Error("Define at least one between role and resource.");
                 }
 
-                whoField = splitArray(node.who, node.whoType, msg);
+                var whoField = splitArray(node.who, node.whoType, msg);
                 
-                whatField = splitArray(node.what, node.whatType, msg);
+                var whatField = splitArray(node.what, node.whatType, msg);
 
 
                 //cannot insert both role and resource

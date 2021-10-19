@@ -28,9 +28,9 @@ module.exports = function (RED) {
 
                 if (!ac.isLocked) {
                     throw new Error("An error occured while locking the instance.");
+                } else {
+                    node.warn("Instance locked.");
                 }
-
-                node.warn("Instance locked.");
 
             } catch (e) {
                 node.error(e.message);

@@ -70,7 +70,8 @@
         <li>BENEFICIARY: the role (even not existing) that will receive the permissions;</li>
         <li>INHERIT FROM: the (existing) role from which permissions are granted to the previous role.</li>
     </ul>
-    <p><b>Note:</b> All fields can also be specified using the msg attributes: e.g., to get the content of "msg.role" write only "role" after changing the type.</p>
+    <p><b>Note:</b> All fields can also be specified using the msg attributes: e.g., to get the content of "msg.role" write only "role" after changing the type. Arrays can be used too, separating values with a comma in the case of string inputs.</p>
+    <p>Some characters are not supported in the string field of role and resource: &,<,>,",',/ and `. However, checks are not made on the content of msg attributes, if those are instead specified.</p>
     <p>Notes on inheritance (from the link above, without examples):
         <ul>
             <li>A role cannot extend itself.</li>

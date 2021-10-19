@@ -41,6 +41,10 @@ module.exports = function (RED) {
                 //add grants to payload (string)
                 msg.payload = ac.getGrants();
 
+                //payload is empty
+                if(isEmpty(msg.payload)){
+                    throw new Error("Empty istance, nothing to export.");
+                }
 
                 node.send(msg);
 
@@ -50,6 +54,10 @@ module.exports = function (RED) {
                 return null;
             }
         });
+
+        function isEmpty(object) {
+            return Object.keys(object).length === 0;
+        }
     }
     RED.nodes.registerType("AC export", ACExportNode);
 }

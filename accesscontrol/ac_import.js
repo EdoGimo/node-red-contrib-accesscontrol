@@ -46,7 +46,12 @@ module.exports = function (RED) {
 
                 //read grants from payload (string)
                 ac.setGrants(db);
-                node.warn("Permissions successfully imported.");
+
+                if(isEmpty(ac.getGrants())){
+                    throw new Error("Nothing was imported. Check the input payload.");
+                }else{
+                    node.warn("Permissions successfully imported.");
+                }
 
                 //clear msg
                 msg = {};
@@ -65,6 +70,10 @@ module.exports = function (RED) {
                 }
             }
         });
+
+        function isEmpty(object) {
+            return Object.keys(object).length === 0;
+        }
     }
     RED.nodes.registerType("AC import", ACImportNode);
 }

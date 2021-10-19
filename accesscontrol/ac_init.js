@@ -28,6 +28,10 @@ module.exports = function (RED) {
                 //set context for following nodes
                 flowContext.set("accesscontrol", ac);
 
+                if(!flowContext.get("accesscontrol")){
+                    throw new Error("An unexpected error has caused the accesscontrol instance not to be set.");
+                }
+
             } catch (e) {
                 node.error(e.message);
                 return null;

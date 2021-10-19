@@ -73,81 +73,16 @@ module.exports = function (RED) {
                     throw new Error("WHO or WHAT fields not specified. Ensure the msg attributes are not empty!");
                 }
 
-                var createAnyField;
-                var createOwnField;
-                var readAnyField;
-                var readOwnField;
-                var updateAnyField;
-                var updateOwnField;
-                var deleteAnyField;
-                var deleteOwnField;
+                //get the actual value of CRUD attributes
+                var createAnyField = getValue(node.createAnyType, node.createAny, msg);
+                var createOwnField = getValue(node.createOwnType, node.createOwn, msg);
+                var readAnyField = getValue(node.readAnyType, node.readAny, msg);
+                var readOwnField = getValue(node.readOwnType, node.readOwn, msg);
+                var updateAnyField = getValue(node.updateAny, node.updateAny, msg);
+                var updateOwnField = getValue(node.updateOwn, node.updateOwn, msg);
+                var deleteAnyField = getValue(node.deleteAny, node.deleteAny, msg);
+                var deleteOwnField = getValue(node.deleteOwn, node.deleteOwn, msg);
 
-                //get the actual value of CRUD actions if is in msg + convert to boolean
-                if (node.createAnyType == "msg") {
-                    createAnyField = RED.util.getMessageProperty(msg, node.createAny);
-                    if (typeof (createAnyField) == "string") {
-                        createAnyField = createAnyField === 'true';
-                    }
-                    //import as a boolean from the node otherwise
-                } else {
-                    createAnyField = node.createAny === 'true';
-                }
-                if (node.createOwnType == "msg") {
-                    createOwnField = RED.util.getMessageProperty(msg, node.createOwn);
-                    if (typeof (createOwnField) == "string") {
-                        createOwnField = createOwnField === 'true';
-                    }
-                } else {
-                    createOwnField = node.createOwn === 'true';
-                }
-                if (node.readAnyType == "msg") {
-                    readAnyField = RED.util.getMessageProperty(msg, node.readAny);
-                    if (typeof (readAnyField) == "string") {
-                        readAnyField = readAnyField === 'true';
-                    }
-                } else {
-                    readAnyField = node.readAny === 'true';
-                }
-                if (node.readOwnType == "msg") {
-                    readOwnField = RED.util.getMessageProperty(msg, node.readOwn);
-                    if (typeof (readOwnField) == "string") {
-                        readOwnField = readOwnField === 'true';
-                    }
-                } else {
-                    readOwnField = node.readOwn === 'true';
-                }
-                if (node.updateAnyType == "msg") {
-                    updateAnyField = RED.util.getMessageProperty(msg, node.updateAny);
-                    if (typeof (updateAnyField) == "string") {
-                        updateAnyField = updateAnyField === 'true';
-                    }
-                } else {
-                    updateAnyField = node.updateAny === 'true';
-                }
-                if (node.updateOwnType == "msg") {
-                    updateOwnField = RED.util.getMessageProperty(msg, node.updateOwn);
-                    if (typeof (updateOwnField) == "string") {
-                        updateOwnField = updateOwnField === 'true';
-                    }
-                } else {
-                    updateOwnField = node.updateOwn === 'true';
-                }
-                if (node.deleteAnyType == "msg") {
-                    deleteAnyField = RED.util.getMessageProperty(msg, node.deleteAny);
-                    if (typeof (deleteAnyField) == "string") {
-                        deleteAnyField = deleteAnyField === 'true';
-                    }
-                } else {
-                    deleteAnyField = node.deleteAny === 'true';
-                }
-                if (node.deleteOwnType == "msg") {
-                    deleteOwnField = RED.util.getMessageProperty(msg, node.deleteOwn);
-                    if (typeof (deleteOwnField) == "string") {
-                        deleteOwnField = deleteOwnField === 'true';
-                    }
-                } else {
-                    deleteOwnField = node.deleteOwn === 'true';
-                }
 
                 //check if there is an action selected
                 if (!createAnyField && !createOwnField &&
@@ -164,7 +99,7 @@ module.exports = function (RED) {
                 var updateField = null;
                 var deleteField = null;
 
-                //CRUD attributes
+                //CRUD attributes for msg (string inputs are handled differently)
                 if (node.createType == "msg") {
                     createField = RED.util.getMessageProperty(msg, node.create);
                 }
@@ -266,6 +201,24 @@ module.exports = function (RED) {
                 return null;
             }
         });
+
+        function getValue(type, action, msg){
+            var result = false;
+
+            //get the actual value of CRUD actions if is in msg + convert to boolean
+            if (type == "msg") {
+                result = RED.util.getMessageProperty(msg, action);
+                if (typeof (ret) == "string") {
+                    result = result === 'true';
+                }
+
+            //import as a boolean from the node otherwise
+            } else {
+                result = action === 'true';
+            }
+
+            return result;
+        }
     }
     RED.nodes.registerType("grant", GrantNode);
 }
