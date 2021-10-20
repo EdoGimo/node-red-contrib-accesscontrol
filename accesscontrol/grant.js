@@ -94,24 +94,10 @@ module.exports = function (RED) {
 
 
                 //variables initialized only if the array is in the msg
-                var createField = null;
-                var readField = null;
-                var updateField = null;
-                var deleteField = null;
-
-                //CRUD attributes for msg (string inputs are handled differently)
-                if (node.createType == "msg") {
-                    createField = RED.util.getMessageProperty(msg, node.create);
-                }
-                if (node.readType == "msg") {
-                    readField = RED.util.getMessageProperty(msg, node.read);
-                }
-                if (node.updateType == "msg") {
-                    updateField = RED.util.getMessageProperty(msg, node.update);
-                }
-                if (node.deleteType == "msg") {
-                    deleteField = RED.util.getMessageProperty(msg, node.delete);
-                }
+                var createField = getAttrValue(createType, node.create, msg);
+                var readField = getAttrValue(readType, node.read, msg);
+                var updateField = getAttrValue(updateType, node.update, msg);
+                var deleteField = getAttrValue(deleteType, node.delete, msg);
 
 
                 //grant permissions
@@ -125,71 +111,31 @@ module.exports = function (RED) {
                 //IF both the Any and Own are selected, Any is enough
 
                 //=== CREATE ===
-                //if attributes are specified AND the array is NOT in a msg
-                if (node.create && !createField) {
-                    if (createAnyField == true) {
-                        ac.grant(whoField).createAny(whatField, node.create.split(",").map(item => item.trim()));
-                    } else if (createOwnField == true) {
-                        ac.grant(whoField).createOwn(whatField, node.create.split(",").map(item => item.trim()));
-                    }
-                    //if attributes are NOT specified OR the array is in a msg
-                } else {
-                    if (createAnyField == true) {
-                        ac.grant(whoField).createAny(whatField, createField);  //second argument potentially null
-                    } else if (createOwnField == true) {
-                        ac.grant(whoField).createOwn(whatField, createField);  //second argument potentially null
-                    }
+                if (createAnyField == true) {
+                    ac.grant(whoField).createAny(whatField, createField);
+                } else if (createOwnField == true) {
+                    ac.grant(whoField).createOwn(whatField, createField);
                 }
 
                 //=== READ ===
-                //if attributes are specified AND the array is NOT in a msg
-                if (node.read && !readField) {
-                    if (readAnyField == true) {
-                        ac.grant(whoField).readAny(whatField, node.read.split(",").map(item => item.trim()));
-                    } else if (readOwnField == true) {
-                        ac.grant(whoField).readOwn(whatField, node.read.split(",").map(item => item.trim()));
-                    }
-                    //if attributes are NOT specified OR the array is in a msg
-                } else {
-                    if (readAnyField == true) {
-                        ac.grant(whoField).readAny(whatField, readField);  //second argument potentially null
-                    } else if (readOwnField == true) {
-                        ac.grant(whoField).readOwn(whatField, readField);  //second argument potentially null
-                    }
+                if (readAnyField == true) {
+                    ac.grant(whoField).readAny(whatField, readField);
+                } else if (readOwnField == true) {
+                    ac.grant(whoField).readOwn(whatField, readField);
                 }
 
                 //=== UPDATE ===
-                //if attributes are specified AND the array is NOT in a msg
-                if (node.update && !updateField) {
-                    if (updateAnyField == true) {
-                        ac.grant(whoField).updateAny(whatField, node.update.split(",").map(item => item.trim()));
-                    } else if (updateOwnField == true) {
-                        ac.grant(whoField).updateOwn(whatField, node.update.split(",").map(item => item.trim()));
-                    }
-                    //if attributes are NOT specified OR the array is in a msg
-                } else {
-                    if (updateAnyField == true) {
-                        ac.grant(whoField).updateAny(whatField, updateField);  //second argument potentially null
-                    } else if (updateOwnField == true) {
-                        ac.grant(whoField).updateOwn(whatField, updateField);  //second argument potentially null
-                    }
+                if (updateAnyField == true) {
+                    ac.grant(whoField).updateAny(whatField, updateField);
+                } else if (updateOwnField == true) {
+                    ac.grant(whoField).updateOwn(whatField, updateField);
                 }
 
                 //=== DELETE ===
-                //if attributes are specified AND the array is NOT in a msg
-                if (node.delete && !deleteField) {
-                    if (deleteAnyField == true) {
-                        ac.grant(whoField).deleteAny(whatField, node.delete.split(",").map(item => item.trim()));
-                    } else if (deleteOwnField == true) {
-                        ac.grant(whoField).deleteOwn(whatField, node.delete.split(",").map(item => item.trim()));
-                    }
-                    //if attributes are NOT specified OR the array is in a msg
-                } else {
-                    if (deleteAnyField == true) {
-                        ac.grant(whoField).deleteAny(whatField, deleteField);  //second argument potentially null
-                    } else if (deleteOwnField == true) {
-                        ac.grant(whoField).deleteOwn(whatField, deleteField);  //second argument potentially null
-                    }
+                if (deleteAnyField == true) {
+                    ac.grant(whoField).deleteAny(whatField, deleteField);
+                } else if (deleteOwnField == true) {
+                    ac.grant(whoField).deleteOwn(whatField, deleteField);
                 }
 
 
@@ -201,6 +147,20 @@ module.exports = function (RED) {
                 return null;
             }
         });
+
+
+        function getAttrValue(type, attr, msg){
+            var result = null;
+
+            //CRUD attributes for msg (string inputs are handled differently)
+            if (type == "msg") {
+                result = RED.util.getMessageProperty(msg, attr);
+            } else if(attr){
+                result = (attr).split(",").map(item => item.trim());
+            }
+
+            return result;
+        }
 
         function getValue(type, action, msg){
             var result = false;
