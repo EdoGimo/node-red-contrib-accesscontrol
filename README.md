@@ -1,7 +1,6 @@
 # node-red-contrib-accesscontrol
 [![platform](https://img.shields.io/badge/platform-Node--RED-red)](https://nodered.org)
 [![npm version](https://badge.fury.io/js/node-red-contrib-accesscontrol.svg)](https://badge.fury.io/js/node-red-contrib-accesscontrol)
-[![dependencies Status](https://status.david-dm.org/gh/edogimo/node-red-contrib-accesscontrol.svg)](https://david-dm.org/edogimo/node-red-contrib-accesscontrol)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/EdoGimo/node-red-contrib-accesscontrol/graphs/commit-activity)
 [![vulnerabilities Status](https://snyk.io/test/github/edogimo/node-red-contrib-accesscontrol/badge.svg)](https://snyk.io/test/github/edogimo/node-red-contrib-accesscontrol)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
