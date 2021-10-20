@@ -148,7 +148,7 @@ module.exports = function (RED) {
                 if (typeof (result) == "string") {
                     result = result === 'true';
                 }
-                //import as a boolean from the node otherwise
+            //import as a boolean from the node otherwise
             } else {
                 result = action === 'true';
             }

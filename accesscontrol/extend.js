@@ -67,7 +67,13 @@ module.exports = function (RED) {
             //get the actual value if msg was selected
             if (type == "msg") {
                 //filter removes empty fields
-                return RED.util.getMessageProperty(msg, value).filter(a=> a);
+                var temp = RED.util.getMessageProperty(msg, value);
+                if(Array.isArray(temp)){
+                    return temp.filter(a=> a);
+                }else{
+                    return temp;
+                }
+                
 
             //get the actual value if msg was NOT selected
             } else {
