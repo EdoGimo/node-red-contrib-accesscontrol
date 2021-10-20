@@ -47,6 +47,7 @@
 
 <script type="text/html" data-help-name="AC import">
     <p>Imports from the payload, as a JSON (string), the given AC permissions and applies them in the current flow context. Ensure the JSON contains the permission object in the proper format.</p>
+    <p>Already specified permissions will be overridden with the imported ones.</p>
     <p>Additionally, importing from MongoDB is simplified by providing the '_id' value, which identifies the document and has to be removed before importing the JSON into Access Control.</p>
     <h4>AccessControl module's logic</h4>
     <p>Details on module logic at <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>

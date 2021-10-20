@@ -94,10 +94,10 @@ module.exports = function (RED) {
 
 
                 //variables initialized only if the array is in the msg
-                var createField = getAttrValue(createType, node.create, msg);
-                var readField = getAttrValue(readType, node.read, msg);
-                var updateField = getAttrValue(updateType, node.update, msg);
-                var deleteField = getAttrValue(deleteType, node.delete, msg);
+                var createField = getAttrValue(node.createType, node.create, msg);
+                var readField = getAttrValue(node.readType, node.read, msg);
+                var updateField = getAttrValue(node.updateType, node.update, msg);
+                var deleteField = getAttrValue(node.deleteType, node.delete, msg);
 
 
                 //grant permissions
