@@ -34,7 +34,7 @@ module.exports = function (RED) {
                     throw new Error("AccessControl instance non-existent. Set it with 'AC init' first.");
                 }
 
-                //extend role (checks delegated to the module)
+                //extend role (preconditions delegated to the module)
                 ac.grant(whoField).extend(whatField);
 
 
@@ -44,10 +44,17 @@ module.exports = function (RED) {
                     //run the function for each element
                     whoField.forEach(element => {
                         isInherited(whatField, ac.getInheritedRolesOf(element));
+
+                        //LOG
+                        node.log( logInfo(element, whatField) );
                     });
 
+                //if WHO is NOT an array
                 } else {
                     isInherited(whatField, ac.getInheritedRolesOf(whoField));
+
+                    //LOG
+                    node.log( logInfo(whoField, whatField) );
                 }
 
                 node.send(msg);
@@ -107,12 +114,21 @@ module.exports = function (RED) {
                 if (!checker(whatField, inherit)){
                     throw new Error("Roles unexpectedly not inherited.");
                 }
+            //if WHAT is NOT an array
             } else {
 
                 //be sure the string is contained in the inherit array
                 if (inherit.indexOf(whatField) === -1){
                     throw new Error("Role unexpectedly not inherited.");
                 }
+            }
+        }
+
+        function logInfo(who, what){
+            if(Array.isArray(what)){
+                return "Extended role '" + who + "', inheriting from roles [" + what + "].";
+            } else {
+                return "Extended role '" + who + "', inheriting from role '" + what + "'.";
             }
         }
     }

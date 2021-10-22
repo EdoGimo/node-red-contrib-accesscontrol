@@ -113,29 +113,45 @@ module.exports = function (RED) {
                 //=== CREATE ===
                 if (createAnyField == true) {
                     ac.grant(whoField).createAny(whatField, createField);
+                    //LOG
+                    node.log( logInfo(whoField, "create ANY", whatField, createField) );
                 } else if (createOwnField == true) {
                     ac.grant(whoField).createOwn(whatField, createField);
+                    //LOG
+                    node.log( logInfo(whoField, "create OWN", whatField, createField) );
                 }
 
                 //=== READ ===
                 if (readAnyField == true) {
                     ac.grant(whoField).readAny(whatField, readField);
+                    //LOG
+                    node.log( logInfo(whoField, "read ANY", whatField, readField) );
                 } else if (readOwnField == true) {
                     ac.grant(whoField).readOwn(whatField, readField);
+                    //LOG
+                    node.log( logInfo(whoField, "read OWN", whatField, readField) );
                 }
 
                 //=== UPDATE ===
                 if (updateAnyField == true) {
                     ac.grant(whoField).updateAny(whatField, updateField);
+                    //LOG
+                    node.log( logInfo(whoField, "update ANY", whatField, updateField) );
                 } else if (updateOwnField == true) {
                     ac.grant(whoField).updateOwn(whatField, updateField);
+                    //LOG
+                    node.log( logInfo(whoField, "update OWN", whatField, updateField) );
                 }
 
                 //=== DELETE ===
                 if (deleteAnyField == true) {
                     ac.grant(whoField).deleteAny(whatField, deleteField);
+                    //LOG
+                    node.log( logInfo(whoField, "delete ANY", whatField, deleteField) );
                 } else if (deleteOwnField == true) {
                     ac.grant(whoField).deleteOwn(whatField, deleteField);
+                    //LOG
+                    node.log( logInfo(whoField, "delete OWN", whatField, deleteField) );
                 }
 
 
@@ -178,6 +194,14 @@ module.exports = function (RED) {
             }
 
             return result;
+        }
+
+        function logInfo(who, action, what, attr){
+            if(attr){
+                return "Granted to role '" + who + "' permission to '"+ action +"' on resource '" + what + "' with attributes [" + attr + "].";
+            } else {
+                return "Granted to role '" + who + "' permission to '"+ action +"' on resource '" + what + "' whitout attributes.";
+            }
         }
     }
     RED.nodes.registerType("grant", GrantNode);

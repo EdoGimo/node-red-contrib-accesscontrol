@@ -101,31 +101,47 @@ module.exports = function (RED) {
                 //=== CREATE ===
                 if (createAnyField) {
                     ac.deny(whoField).createAny(whatField);
+                    //LOG
+                    node.log( logInfo(whoField, "create ANY", whatField) );
                 } else if (createOwnField) {
                     ac.deny(whoField).createOwn(whatField);
+                    //LOG
+                    node.log( logInfo(whoField, "create OWN", whatField) );
                 }
 
                 //=== READ ===
                 if (readAnyField) {
                     ac.deny(whoField).readAny(whatField);
+                    //LOG
+                    node.log( logInfo(whoField, "read ANY", whatField) );
                 } else if (readOwnField) {
                     ac.deny(whoField).readOwn(whatField);
+                    //LOG
+                    node.log( logInfo(whoField, "read OWN", whatField) );
                 }
 
                 //=== UPDATE ===
 
                 if (updateAnyField) {
                     ac.deny(whoField).updateAny(whatField);
+                    //LOG
+                    node.log( logInfo(whoField, "update ANY", whatField) );
                 } else if (updateOwnField) {
                     ac.deny(whoField).updateOwn(whatField);
+                    //LOG
+                    node.log( logInfo(whoField, "update OWN", whatField) );
                 }
 
                 //=== DELETE ===
 
                 if (deleteAnyField) {
                     ac.deny(whoField).deleteAny(whatField);
+                    //LOG
+                    node.log( logInfo(whoField, "delete ANY", whatField) );
                 } else if (deleteOwnField) {
                     ac.deny(whoField).deleteOwn(whatField);
+                    //LOG
+                    node.log( logInfo(whoField, "delete OWN", whatField) );
                 }
 
 
@@ -154,6 +170,10 @@ module.exports = function (RED) {
             }
 
             return result;
+        }
+
+        function logInfo(who, action, what){
+            return "Denied to role '" + who + "' permission to '"+ action +"' on resource '" + what + "'.";
         }
     }
     RED.nodes.registerType("deny", DenyNode);

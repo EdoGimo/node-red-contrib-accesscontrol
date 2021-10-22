@@ -30,6 +30,8 @@ module.exports = function (RED) {
 
                 if(!flowContext.get("accesscontrol")){
                     throw new Error("An unexpected error has caused the accesscontrol instance not to be set.");
+                } else {
+                    node.log("Initialized permissions.")
                 }
 
             } catch (e) {

@@ -44,6 +44,9 @@ module.exports = function (RED) {
                 //payload is empty
                 if(isEmpty(msg.payload)){
                     throw new Error("Empty istance, nothing to export.");
+                } else {
+                    //LOG
+                    node.log("Instance exported.");
                 }
 
                 node.send(msg);

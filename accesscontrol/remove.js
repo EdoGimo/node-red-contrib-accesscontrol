@@ -3,10 +3,10 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
 
         //options
-        this.who = config.who;      //Role
-        this.whoType = config.whoType;
-        this.what = config.what;    //Resource
-        this.whatType = config.whatType;
+        this.role = config.role;
+        this.roleType = config.roleType;
+        this.resource = config.resource;
+        this.resourceType = config.resourceType;
         this.force = config.force;
 
 
@@ -20,22 +20,22 @@ module.exports = function (RED) {
             try {
 
                 //cannot leave both empty
-                if (!node.who && !node.what) {
+                if (!node.role && !node.resource) {
                     throw new Error("Define at least one between role and resource.");
                 }
 
-                var whoField = splitArray(node.who, node.whoType, msg);
+                var roleField = splitArray(node.role, node.roleType, msg);
                 
-                var whatField = splitArray(node.what, node.whatType, msg);
+                var resourceField = splitArray(node.resource, node.resourceType, msg);
 
 
                 //cannot insert both role and resource
-                if (whoField && whatField) {
+                if (roleField && resourceField) {
                     throw new Error("Define only one between role and resource.");
                 }
 
                 //cannot leave both empty
-                if (!whoField && !whatField) {
+                if (!roleField && !resourceField) {
                     throw new Error("Define at least one between role and resource.");
                 }
 
@@ -49,10 +49,11 @@ module.exports = function (RED) {
                 var missing = new Array();
 
                 //IF role is selected
-                if (whoField) {
+                if (roleField) {
 
-                    if (Array.isArray(whoField)) {
-                        whoField.forEach(function (element) {
+                    //IF it is an array
+                    if (Array.isArray(roleField)) {
+                        roleField.forEach(function (element) {
 
                             //check if the values are present
                             if (!ac.hasRole(element)) {
@@ -62,50 +63,57 @@ module.exports = function (RED) {
                             }
                         });
 
-                        //if there was a missing fole and force was not set, do not proceed with the removal
+                        //if there was a missing role and force was NOT set, do not proceed with removal
                         if (missing.length > 0 && !node.force) {
                             throw new Error("Removal interrupted for missing role(s).");
 
+                        //if there was a missing role and force was set, proceed with removal
                         } else if (missing.length > 0) {
-                            whoField = whoField.filter((el) => !missing.includes(el));
+                            roleField = roleField.filter((el) => !missing.includes(el));
 
-                            if (whoField.length > 0) {
-                                ac.removeRoles(whoField);
+                            if (roleField.length > 0) {
+                                ac.removeRoles(roleField);
                             } else {
                                 throw new Error("Nothing to remove.");
                             }
 
+                        //if all roles are present, proceed with removal
                         } else {
-                            ac.removeRoles(whoField);
+                            ac.removeRoles(roleField);
                         }
 
                         //check if the values have been removed
-                        if (ac.hasRole(whoField)) {
+                        if (ac.hasRole(roleField)) {
                             throw new Error("Roles were unexpectedly not removed.");
                         }
 
+                    //IF it is NOT an array
                     } else {
 
                         //check if the value is present
-                        if (!ac.hasRole(whoField)) {
+                        if (!ac.hasRole(roleField)) {
                             throw new Error("Role not found.");
                         }
 
-                        ac.removeRoles(whoField);
+                        ac.removeRoles(roleField);
 
                         //check if the value has been removed
-                        if (ac.hasRole(whoField)) {
+                        if (ac.hasRole(roleField)) {
                             throw new Error("Role was unexpectedly not removed.");
                         }
                     }
+
+                    //LOG
+                    node.log( logInfo('role', roleField) );
                 }
 
 
                 //IF resource is selected
-                if (whatField) {
+                if (resourceField) {
 
-                    if (Array.isArray(whatField)) {
-                        whatField.forEach(function (element) {
+                    //IF it is an array
+                    if (Array.isArray(resourceField)) {
+                        resourceField.forEach(function (element) {
 
                             //check if the values are present
                             if (!ac.hasResource(element)) {
@@ -115,42 +123,49 @@ module.exports = function (RED) {
                             }
                         });
 
-                        //if there was a missing resource and force was not set, do not proceed with the removal
+                        //if there was a missing resource and force was NOT set, do not proceed with removal
                         if (missing.length > 0 && !node.force) {
                             throw new Error("Removal interrupted for missing resource(s).");
 
+                        //if there was a missing resource and force was set, proceed with removal
                         } else if (missing.length > 0) {
-                            whatField = whatField.filter((el) => !missing.includes(el));
+                            resourceField = resourceField.filter((el) => !missing.includes(el));
 
-                            if (whatField.length > 0) {
-                                ac.removeResources(whatField);
+                            if (resourceField.length > 0) {
+                                ac.removeResources(resourceField);
                             } else {
                                 throw new Error("Nothing to remove.");
                             }
 
+                        //if all resources are present, proceed with removal
                         } else {
-                            ac.removeResources(whatField);
+                            ac.removeResources(resourceField);
                         }
 
                         //check if the values have been removed
-                        if (ac.hasResource(whatField)) {
+                        if (ac.hasResource(resourceField)) {
                             throw new Error("Resources were unexpectedly not removed.");
                         }
 
+                    //IF it is NOT an array
                     } else {
 
                         //check if the value is present
-                        if (!ac.hasResource(whatField)) {
+                        if (!ac.hasResource(resourceField)) {
                             throw new Error("Resource not found.");
                         }
 
-                        ac.removeResources(whatField);
+                        ac.removeResources(resourceField);
 
                         //check if the value has been removed
-                        if (ac.hasResource(whatField)) {
+                        if (ac.hasResource(resourceField)) {
                             throw new Error("Resource was unexpectedly not removed.");
                         }
                     }
+
+                    //LOG
+                    node.log( logInfo('resource', resourceField) );
+
                 }
 
                 node.send(msg);
@@ -168,7 +183,7 @@ module.exports = function (RED) {
             //characters not accepted
             const notAccepted = ['&','<','>','"',"'","/","`"];
 
-            //get the actual value of who and what if msg was selected
+            //get the actual value of role and resource if msg was selected
             if (type == "msg") {
                 //filter removes empty fields
                 var temp = RED.util.getMessageProperty(msg, value);
@@ -178,7 +193,7 @@ module.exports = function (RED) {
                     return temp;
                 }
 
-            //get the actual value of who and what if msg was NOT selected
+            //get the actual value of role and resource if msg was NOT selected
             } else if (value) {
 
                 notAccepted.forEach(element => {
@@ -194,9 +209,17 @@ module.exports = function (RED) {
                     return value;
                 }
 
-            //the current property (who or what) is not selected
+            //the current property (role or resource) is not selected
             } else {
                 return null;
+            }
+        }
+
+        function logInfo(field, name){
+            if(Array.isArray(name)){
+                return "Removed the " + field + "s named ["+ name +"].";
+            } else {
+                return "Removed the " + field + " named '"+ name +"'.";
             }
         }
     }
