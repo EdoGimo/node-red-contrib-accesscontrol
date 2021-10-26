@@ -4,13 +4,25 @@
         color: '#ca9758',
         defaults: {
             name: { value: "" },
-            force: { value: false }
+            force: { value: false },
+            check: { value: true },
+            outputs: { value: 0}
         },
         inputs: 1,
-        outputs: 0,
         icon: "font-awesome/fa-shield",
         label: function () {
             return this.name || "AC init";
+        },
+        oneditprepare: function () {
+            var node = this;
+            node.outputs = $("#node-input-check").prop('checked') ? 1 : 0;
+            $("#node-input-check").change(function() {
+                node.outputs = this.checked ? 1 : 0;
+            });            
+        },
+        oneditsave: function () {
+            var node = this;
+            node.outputs = $("#node-input-check").prop('checked') ? 1 : 0;
         }
     });
 </script>
@@ -27,11 +39,17 @@
         <input type="checkbox" id="node-input-force" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-force" style="width: auto"><i class="fa fa-repeat" style="transform: scaleX(-1);"></i> Force recreation of AccessControl istance.</label>
     </div>
+    <div class="form-row">
+        <label for="node-input-check">&nbsp;</label>            
+        <input type="checkbox" id="node-input-check" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-check" style="width: auto"><i class="fa fa-sign-out"></i> Provide an output.</label>
+    </div>
 </script>
 
 <script type="text/html" data-help-name="AC init">
     <p>Initializes the Access Control instance that is used in the other AC nodes, using context (flow context in this case). </p>
     <p>Put this node at the beginning of the flow. A check is made to ensure that the code is not run if it has already been executed previously, so it is not a problem if it is called several times. To skip this check, force the recreation of the istance with the corresponding option.</p>
+    <p>Optionally, an output can be added, to avoid the use of delays for ensuring correct order of execution.</p>
     <h4>AccessControl module's logic</h4>
     <p>Details on module logic at <a href="https://www.npmjs.com/package/accesscontrol">npmjs.com/accesscontrol</a>.</p>
 </script>

@@ -4,6 +4,7 @@ module.exports = function (RED) {
 
         //options
         this.force = config.force;
+        this.check = config.check;
 
         //context selection (change ".flow" to ".global" for global context)
         var flowContext = this.context().flow;
@@ -28,10 +29,15 @@ module.exports = function (RED) {
                 //set context for following nodes
                 flowContext.set("accesscontrol", ac);
 
-                if(!flowContext.get("accesscontrol")){
+                if (!flowContext.get("accesscontrol")) {
                     throw new Error("An unexpected error has caused the accesscontrol instance not to be set.");
                 } else {
                     node.log("Initialized permissions.")
+                }
+
+                //forward the message if the output is set
+                if (node.check) {
+                    node.send(msg);
                 }
 
             } catch (e) {
