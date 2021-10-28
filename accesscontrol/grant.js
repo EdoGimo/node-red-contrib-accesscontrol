@@ -5,43 +5,37 @@ module.exports = function (RED) {
         //options
         this.who = config.who;
         this.whoType = config.whoType;
+        this.what = config.what;
+        this.whatType = config.whatType;
 
         //C
         this.createAny = config.createAny;
         this.createAnyType = config.createAnyType;
         this.createOwn = config.createOwn;
         this.createOwnType = config.createOwnType;
+        this.create = config.create;
+        this.createType = config.createType;
         //R
         this.readAny = config.readAny;
         this.readAnyType = config.readAnyType;
         this.readOwn = config.readOwn;
         this.readOwnType = config.readOwnType;
+        this.read = config.read;
+        this.readType = config.readType;
         //U
         this.updateAny = config.updateAny;
         this.updateAnyType = config.updateAnyType;
         this.updateOwn = config.updateOwn;
         this.updateOwnType = config.updateOwnType;
+        this.update = config.update;
+        this.updateType = config.updateType;
         //D
         this.deleteAny = config.deleteAny;
         this.deleteAnyType = config.deleteAnyType;
         this.deleteOwn = config.deleteOwn;
         this.deleteOwnType = config.deleteOwnType;
-
-        //get attributes values
-        this.create = config.create;
-        this.createType = config.createType;
-
-        this.read = config.read;
-        this.readType = config.readType;
-
-        this.update = config.update;
-        this.updateType = config.updateType;
-
         this.delete = config.delete;
         this.deleteType = config.deleteType;
-
-        this.what = config.what;
-        this.whatType = config.whatType;
 
 
         //context selection (change ".flow" to ".global" for global context)

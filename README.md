@@ -34,7 +34,7 @@ If necessary, restart Node-RED.
 
 ## How to use
 10 nodes are provided:
-- **AC init**: creates the AccessControl instance that contains all permissions (as no database is used). It should be called just once for each execution, although the instance is not overwritten without explicitly specifying it checking the related option;
+- **AC init**: creates the AccessControl instance that contains all permissions (as no database is used). It should be called just once for each execution, although the instance is not overwritten without explicitly specifying it checking the related option. By default it has no output, but one can be added by checking the specific option in the properties;
 
 - **AC export**: export the AccessControl permissions as a string (JSON format). If specified, it can export with a identifier so it is possible to save the output directly into a MongoDB database, using the specific Node-RED node;
 
