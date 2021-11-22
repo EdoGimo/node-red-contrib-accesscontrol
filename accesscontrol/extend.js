@@ -65,38 +65,47 @@ module.exports = function (RED) {
                 return null;
             }
         });
+        
 
         function splitArray(value, type, msg){
-
-            //characters not accepted
-            const notAccepted = ['&','<','>','"',"'","/","`"];
+            var result = null;
 
             //get the actual value if msg was selected
             if (type == "msg") {
-                //filter removes empty fields
-                var temp = RED.util.getMessageProperty(msg, value);
-                if(Array.isArray(temp)){
-                    return temp.filter(a=> a);
-                }else{
-                    return temp;
-                }
-                
 
-            //get the actual value if msg was NOT selected
+                result = RED.util.getMessageProperty(msg, value);
+                if(Array.isArray(result)){
+                    result = result.filter(a=> a);  //filter removes empty fields
+                } else if (typeof result === 'string' || result instanceof String){
+                    result = notAccepted(result);
+                } else {
+                    throw new Error("Unsupported type of msg value. See the documentation.");
+                }
+
+            //if not saved in msg (string)
             } else {
 
-                notAccepted.forEach(element => {
-                    if ((value).includes(element)){
-                        throw new Error("Improper characters used. See the documentation.");
-                    }
-                });
-                
-                if ((value).includes(",")) {
-                    //split by comma, map each value to an array field, filter out empty fields
-                    return (value).split(",").map(item => item.trim()).filter(a=> a);
-                } else {
-                    return value;
+                result = notAccepted(value);
+            }
+
+            return result;
+        }
+
+
+        function notAccepted(value){
+            const notAccepted = ['&','<','>','"',"'","/","`", ":", "[", "]", ";"];
+
+            notAccepted.forEach(element => {
+                if ((value).includes(element)){
+                    throw new Error("Improper characters used. See the documentation.");
                 }
+            });
+
+            if ((value).includes(",")) {
+                //split by comma, map each value to an array field, filter out empty fields
+                return (value).split(",").map(item => item.trim()).filter(a=> a);
+            } else {
+                return value;
             }
         }
 

@@ -162,26 +162,54 @@ module.exports = function (RED) {
         function getAttrValue(type, attr, msg){
             var result = null;
 
-            //CRUD attributes for msg (string inputs are handled differently)
+            //CRUD attributes for msg
             if (type == "msg") {
+
                 result = RED.util.getMessageProperty(msg, attr);
+                if(Array.isArray(result)){
+                    result = result.filter(a=> a);
+                } else if (typeof result === 'string' || result instanceof String){
+                    result = notAccepted(result);
+                } else {
+                    throw new Error("Unsupported type of msg value in attributes field. See the documentation.");
+                }
+
+            //if attributes exist but are not saved in msg (string)
             } else if(attr){
-                result = (attr).split(",").map(item => item.trim());
+
+                result = notAccepted(attr);
             }
 
             return result;
         }
 
-        function getValue(type, action, msg){
+        function notAccepted(attr){
+            const notAccepted = ['&','<','>','"',"'","/","`", ":", "[", "]", ";"];
+
+            notAccepted.forEach(element => {
+                if ((attr).includes(element)){
+                    throw new Error("Improper characters used in the attributes field. See the documentation.");
+                }
+            });
+
+            if ((attr).includes(",")) {
+                //split by comma, map each attr to an array field, filter out empty fields
+                return (attr).split(",").map(item => item.trim()).filter(a=> a);
+            } else {
+                return attr;
+            }
+        }
+
+
+        function getValue(type, action, msg) {
             var result = false;
 
             //get the actual value of CRUD actions if is in msg + convert to boolean
             if (type == "msg") {
                 result = RED.util.getMessageProperty(msg, action);
-                if (typeof (ret) == "string") {
+                if (typeof (result) == "string") {
                     result = result === 'true';
                 }
-
             //import as a boolean from the node otherwise
             } else {
                 result = action === 'true';
@@ -189,6 +217,7 @@ module.exports = function (RED) {
 
             return result;
         }
+        
 
         function logInfo(who, action, what, attr){
             if(attr){

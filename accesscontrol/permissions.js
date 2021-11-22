@@ -175,20 +175,48 @@ module.exports = function (RED) {
 
 
 
-        function getAttrValue(type, attr, msg) {
+        function getAttrValue(type, attr, msg){
             var result = null;
 
-            //get the actual value of CRUD actions if is in msg + convert to boolean
+            //CRUD attributes for msg
             if (type == "msg") {
+
                 result = RED.util.getMessageProperty(msg, attr);
-            } else if (attr) {
-                //import as array if it is specified
-                result = (attr).split(",").map(item => item.trim());
+                if(Array.isArray(result)){
+                    result = result.filter(a=> a);
+                } else if (typeof result === 'string' || result instanceof String){
+                    result = notAccepted(result);
+                } else {
+                    throw new Error("Unsupported type of msg value in attributes field. See the documentation.");
+                }
+
+            //if attributes exist but are not saved in msg (string)
+            } else if(attr){
+
+                result = notAccepted(attr);
             }
 
             return result;
         }
 
+        function notAccepted(attr){
+            const notAccepted = ['&','<','>','"',"'","/","`", ":", "[", "]", ";"];
+
+            notAccepted.forEach(element => {
+                if ((attr).includes(element)){
+                    throw new Error("Improper characters used in the attributes field. See the documentation.");
+                }
+            });
+
+            if ((attr).includes(",")) {
+                //split by comma, map each attr to an array field, filter out empty fields
+                return (attr).split(",").map(item => item.trim()).filter(a=> a);
+            } else {
+                return attr;
+            }
+        }
+
+        
         function getValue(type, action, msg) {
             var result = false;
 
