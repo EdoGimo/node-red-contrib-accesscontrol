@@ -11,7 +11,7 @@ module.exports = function (RED) {
 
         //MAIN code
         var node = this;
-        node.on('input', function (msg) {
+        node.on('input', function (msg, send, done) {
 
             var mongoField;
 
@@ -49,11 +49,11 @@ module.exports = function (RED) {
                     node.log("Instance exported.");
                 }
 
-                node.send(msg);
-
+                send(msg);
+                done();
 
             } catch (e) {
-                node.error(e.message);
+                node.error(e.message, msg);
                 return null;
             }
         });

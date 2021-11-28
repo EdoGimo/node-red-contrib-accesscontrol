@@ -11,7 +11,7 @@ module.exports = function (RED) {
 
         //MAIN code
         var node = this;
-        node.on('input', function (msg) {
+        node.on('input', function (msg, send, done) {
 
             var db = msg.payload;
             var mongoField;
@@ -54,18 +54,18 @@ module.exports = function (RED) {
                 }
 
                 //clear msg
-                msg = {};
+                //msg = {};
 
 
-                node.send(msg);
-
+                send(msg);
+                done();
 
             } catch (e) {
                 if (e instanceof TypeError) {
                     node.error("Missing payload or value not an AccessControl compatible JSON.");
                     return null;
                 } else {
-                    node.error(e.message);
+                    node.error(e.message, msg);
                     return null;
                 }
             }

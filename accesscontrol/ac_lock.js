@@ -10,7 +10,7 @@ module.exports = function (RED) {
         //MAIN code
         var node = this;
 
-        node.on('input', function (msg) {
+        node.on('input', function (msg, done) { //send not needed
 
 
             try {
@@ -32,8 +32,10 @@ module.exports = function (RED) {
                     node.warn("Instance locked.");
                 }
 
+                done();
+
             } catch (e) {
-                node.error(e.message);
+                node.error(e.message, msg);
                 return null;
             }
 

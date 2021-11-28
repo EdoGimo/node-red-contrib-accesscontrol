@@ -12,7 +12,7 @@ module.exports = function (RED) {
         //MAIN code
         var node = this;
 
-        node.on('input', function (msg) {
+        node.on('input', function (msg, send, done) {
 
             try {
 
@@ -37,11 +37,12 @@ module.exports = function (RED) {
 
                 //forward the message if the output is set
                 if (node.check) {
-                    node.send(msg);
+                    send(msg);
                 }
+                done();
 
             } catch (e) {
-                node.error(e.message);
+                node.error(e.message, msg);
                 return null;
             }
         });

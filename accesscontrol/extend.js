@@ -14,7 +14,7 @@ module.exports = function (RED) {
 
         //MAIN code
         var node = this;
-        node.on('input', function (msg) {
+        node.on('input', function (msg, send, done) {
 
             try {
 
@@ -57,11 +57,12 @@ module.exports = function (RED) {
                     node.log( logInfo(whoField, whatField) );
                 }
 
-                node.send(msg);
+                send(msg);
+                done();
 
 
             } catch (e) {
-                node.error(e.message);
+                node.error(e.message, msg);
                 return null;
             }
         });
