@@ -1,5 +1,8 @@
 name: GitHub Actions general Testing
-on: [push]
+on:
+  push:
+    paths:
+      - '**.md'
 
 jobs:
   build:
