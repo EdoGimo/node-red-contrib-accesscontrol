@@ -17,13 +17,7 @@ Node-RED installed. Tested on most versions starting from 2.0.5 up to 2.1.2.
 
 ### Installation
  
-Install via Node-RED Manage Palette
-
-```
-node-red-contrib-accesscontrol
-```
-
-Install via npm
+Install via Node-RED Manage Palette or via npm:
 
 ```shell
 $ cd ~/.node-red
@@ -31,6 +25,11 @@ $ npm install node-red-contrib-accesscontrol
 ```
 
 If necessary, restart Node-RED.
+
+
+### Alternative
+
+A similar solution is given which does not employ context: [accesscontrol-nocontext](https://flows.nodered.org/node/node-red-contrib-accesscontrol-nocontext).
 
 
 ## How to use
