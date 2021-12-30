@@ -105,5 +105,5 @@ module.exports = function (RED) {
             }
         });
     }
-    RED.nodes.registerType("permission", PermissionNode);
+    RED.nodes.registerType("AC permission", PermissionNode);
 }

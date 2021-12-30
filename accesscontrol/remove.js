@@ -223,5 +223,5 @@ module.exports = function (RED) {
             }
         }
     }
-    RED.nodes.registerType("remove", RemoveNode);
+    RED.nodes.registerType("AC remove", RemoveNode);
 }

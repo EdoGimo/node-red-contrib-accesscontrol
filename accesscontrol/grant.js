@@ -227,5 +227,5 @@ module.exports = function (RED) {
             }
         }
     }
-    RED.nodes.registerType("grant", GrantNode);
+    RED.nodes.registerType("AC grant", GrantNode);
 }

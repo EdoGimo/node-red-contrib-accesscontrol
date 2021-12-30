@@ -142,5 +142,5 @@ module.exports = function (RED) {
             }
         }
     }
-    RED.nodes.registerType("extend", ExtendNode);
+    RED.nodes.registerType("AC extend", ExtendNode);
 }
