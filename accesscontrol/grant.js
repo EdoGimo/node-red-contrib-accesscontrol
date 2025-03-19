@@ -72,10 +72,10 @@ module.exports = function (RED) {
                 var createOwnField = getValue(node.createOwnType, node.createOwn, msg);
                 var readAnyField = getValue(node.readAnyType, node.readAny, msg);
                 var readOwnField = getValue(node.readOwnType, node.readOwn, msg);
-                var updateAnyField = getValue(node.updateAny, node.updateAny, msg);
-                var updateOwnField = getValue(node.updateOwn, node.updateOwn, msg);
-                var deleteAnyField = getValue(node.deleteAny, node.deleteAny, msg);
-                var deleteOwnField = getValue(node.deleteOwn, node.deleteOwn, msg);
+                var updateAnyField = getValue(node.updateAnyType, node.updateAny, msg);
+                var updateOwnField = getValue(node.updateOwnType, node.updateOwn, msg);
+                var deleteAnyField = getValue(node.deleteAnyType, node.deleteAny, msg);
+                var deleteOwnField = getValue(node.deleteOwnType, node.deleteOwn, msg);
 
 
                 //check if there is an action selected
